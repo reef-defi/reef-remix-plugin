@@ -1,27 +1,36 @@
-import React, { useEffect, useState } from "react"
-import {
-  web3Accounts,
-  web3Enable,
-  web3FromAddress,
-  web3ListRpcProviders,
-  web3UseRpcProvider
-} from '@polkadot/extension-dapp';
-
-// returns an array of all the injected sources
-// (this needs to be called first, before other requests)
-// const allInjected = await web3Enable('my cool dapp');
+import { WsProvider } from '@polkadot/api';
+import { Provider } from '@reef-defi/evm-provider';
+import React, { useState } from 'react';
+import Loading from './components/Loading';
+import Network from './components/NetworkConfig';
 
 const App = () => {
-  const [text, setText] = useState("");
-  
-  useEffect(() => {
-    web3Enable('reef-remix-plugin')
-      .then(() => setText("Dela"))
-      .catch(() => setText("Ne dela"))
-  }, [])
+  const [isLoading, setIsLoading] = useState(false);
+  const [provider, setProvider] = useState<Provider|undefined>(undefined);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const submit = async (url: string) => {
+    const newProvider = new Provider({
+      provider: new WsProvider(url),
+    });
+
+    setIsLoading(true);
+    try {
+      await (await newProvider.resolveApi).isReady
+      setProvider(newProvider);
+    } catch (e) {
+      setErrorMessage(e.message);
+      setProvider(undefined);
+    }
+    setIsLoading(false);
+  };
+
+
   return (
-    <div>
-      Hello World {text}
+    <div className="app">
+      {isLoading && <Loading />}
+      {(!isLoading && !provider) && <Network errorMessage={errorMessage} submit={submit} />}
+      {/* {(!isLoading && provider) && <Constructor />} */}
     </div>
   );
 }
