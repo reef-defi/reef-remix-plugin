@@ -6,6 +6,9 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env.name': JSON.stringify('Production'),
-    })
+    }),
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer']
+    }),
   ]
 }
