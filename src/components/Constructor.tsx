@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react"
 import { isWeb3Injected, web3Accounts, web3Enable } from "@polkadot/extension-dapp";
 import { useSelector } from "react-redux";
 import { StateType } from "../store/reducers";
-import DeployInput from "./common/DeployInput";
 import ContractList from "./ContractList";
+import Deploy from "./Deploy";
 
 interface ConstructorProps {
 }
@@ -71,7 +71,7 @@ const Constructor = ({} : ConstructorProps) => {
         </select>
       </div>
 
-      <DeployInput 
+      <Deploy 
         contractName={selectedContract}
         signerAddress={account}
       />
