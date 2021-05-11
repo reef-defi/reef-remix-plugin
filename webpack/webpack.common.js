@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
@@ -6,8 +7,17 @@ module.exports = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
     fallback: {
+      "fs": false,
+      "tls": false,
+      "net": false,
+      "path": false,
+      "zlib": false,
+      "http": false,
+      "https": false,
+      "assert": false,
+      "os": false,
       "crypto": require.resolve("crypto-browserify"),
-      "stream": require.resolve("stream-browserify")
+      "stream": require.resolve("stream-browserify"),
     }
   },
   devServer: {
@@ -20,6 +30,12 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.m?js/,
+        resolve: {
+          fullySpecified: false
+        }
+      },
       {
         test: /\.(ts|js)x?$/,
         exclude: /node_modules/,
@@ -50,6 +66,9 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, "..", "src", "index.html")
-    })  
+    }),
+    new webpack.ProvidePlugin({
+           process: 'process/browser',
+    }),
   ]
 }
