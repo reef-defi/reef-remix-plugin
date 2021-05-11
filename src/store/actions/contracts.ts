@@ -1,4 +1,4 @@
-import { CONTRACT_INIT, CONTRACT_LOAD } from "../actionType";
+import { CONTRACT_LOAD } from "../actionType";
 
 import { CompilationResult } from "@remixproject/plugin-api/lib/compiler/type";
 
