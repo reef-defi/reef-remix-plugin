@@ -23,7 +23,7 @@ const NetworkConfig = ({errorMessage, submit} : NetworkConfigProps) => {
       key={index}
       value={account}
       placeholder="Account mnemonic"
-      className="form-control border w-100 mt-1"
+      className="form-control w-100 mt-1"
       onChange={(event) => changeAccount(event.target.value, index)} />
   ));
 
