@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react"
 
 import { isWeb3Injected, web3Accounts, web3Enable } from "@polkadot/extension-dapp";
-import { RemixSigner } from "../store/signers";
+import { RemixSigner } from "../state/signers";
 import { useSelector } from "react-redux";
 import { StateType } from "../store/reducers";
+import DeployInput from "./common/DeployInput";
 
 interface ConstructorProps {
   signers: RemixSigner [];
@@ -44,6 +45,14 @@ const Constructor = ({signers} : ConstructorProps) => {
       <option value={address} key={index}>{address}</option>
     ));
 
+  const contractOptions = Object
+    .keys(contracts.contracts)
+    .map((contract, index) => (
+      <option value={contract} key={index}>
+        {contract}
+      </option>
+    ));
+
   return (
     <div className="m-3">
       <div>
@@ -65,8 +74,16 @@ const Constructor = ({signers} : ConstructorProps) => {
           Compiled contracts:
         </label>
 
-        <input disabled value={selectedContract} className="form-control"/>
+        <select
+          className="form-select"
+          value={selectedContract}
+          onChange={(event) => setSelectedContract(event.target.value)}
+        >
+          { contractOptions }
+        </select>
       </div>
+
+      <DeployInput />
     </div>
   );
 }
