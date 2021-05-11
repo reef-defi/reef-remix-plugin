@@ -10,6 +10,14 @@ module.exports = {
       "stream": require.resolve("stream-browserify")
     }
   },
+  devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    compress: true,
+    port: 8000,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    }
+  },
   module: {
     rules: [
       {
