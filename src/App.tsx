@@ -7,6 +7,8 @@ import Network from './components/NetworkConfig';
 import { ReefSigner } from '@reef-defi/hardhat-reef/dist/src/proxies/signers/ReefSigner';
 import { KeyringPair } from "@polkadot/keyring/types";
 import { RemixSigner } from './state/signers';
+import { useDispatch } from 'react-redux';
+import { signersLoad } from './store/actions/signers';
 
 const createSeedKeyringPair = (seed: string): KeyringPair => {
   const keyring = new Keyring({ type: "sr25519" });
@@ -35,7 +37,7 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [provider, setProvider] = useState<Provider|undefined>(undefined);
   const [errorMessage, setErrorMessage] = useState("");
-  const [signers, setSigners] = useState<RemixSigner[]>([]);
+  const dispatch = useDispatch();
 
   const submit = async (url: string, mnemonics: string[]) => {
     const newProvider = new Provider({
@@ -50,7 +52,7 @@ const App = () => {
         connectWallets(newProvider, mnemonics)
           .map(extractAddress)
       );
-      setSigners(wallets);
+      dispatch(signersLoad(wallets));
     } catch (e) {
       setErrorMessage(e.message);
       setProvider(undefined);
@@ -63,7 +65,7 @@ const App = () => {
     <div className="app">
       {isLoading && <Loading />}
       {(!isLoading && !provider) && <Network errorMessage={errorMessage} submit={submit} />}
-      {(!isLoading && provider) && <Constructor signers={signers} />}
+      {(!isLoading && provider) && <Constructor />}
     </div>
   );
 }
