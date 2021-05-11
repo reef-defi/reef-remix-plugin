@@ -5,8 +5,8 @@ import { CompilationResult, CompiledContract } from "@remixproject/plugin-api/li
 interface Contracts {
     [name: string]: {
       payload: CompiledContract;
-      name: string;
       filename: string;
+      contractName: string;
     }
   }
 
@@ -38,10 +38,10 @@ const normalizeCompilationOutput = (data: CompilationResult): Contracts => {
 
   Object.entries(data.contracts).forEach(([filename, fileContents]) => {
     Object.entries(fileContents).forEach(([contractName, contractData]) => {
-      contracts[contractName] = {
+      contracts[`${contractName} - ${filename}`] = {
         payload: {...contractData},
         filename,
-        name: contractName
+        contractName
       }
     })
   });

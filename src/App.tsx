@@ -6,7 +6,7 @@ import Loading from './components/common/Loading';
 import Network from './components/NetworkConfig';
 import { ReefSigner } from '@reef-defi/hardhat-reef/dist/src/proxies/signers/ReefSigner';
 import { KeyringPair } from "@polkadot/keyring/types";
-import { RemixSigner } from './state/signers';
+import { RemixSigner } from './store/signers';
 
 const createSeedKeyringPair = (seed: string): KeyringPair => {
   const keyring = new Keyring({ type: "sr25519" });

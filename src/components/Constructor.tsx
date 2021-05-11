@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react"
 
 import { isWeb3Injected, web3Accounts, web3Enable } from "@polkadot/extension-dapp";
-import { RemixSigner } from "../state/signers";
+import { RemixSigner } from "../store/signers";
+import { useSelector } from "react-redux";
+import { StateType } from "../store/reducers";
 
 interface ConstructorProps {
   signers: RemixSigner [];
@@ -12,6 +14,17 @@ const Constructor = ({signers} : ConstructorProps) => {
     ? signers[0].address 
     : ""
   );
+  const [selectedContract, setSelectedContract] = useState("");
+
+  const contracts = useSelector((state: StateType) => state.contracts);
+  console.log(contracts);
+
+  useEffect(() => {
+    const names = Object.keys(contracts.contracts);
+    if (names.length > 0) {
+      setSelectedContract(names[0]);
+    }
+  }, [contracts]);
 
   // useEffect(() => {
   //   console.log(isWeb3Injected);
@@ -27,8 +40,8 @@ const Constructor = ({signers} : ConstructorProps) => {
   // }, [])
 
   const signerOptions = signers
-    .map(({address}) => (
-      <option value={address}>{address}</option>
+    .map(({address}, index) => (
+      <option value={address} key={index}>{address}</option>
     ));
 
   return (
@@ -41,11 +54,18 @@ const Constructor = ({signers} : ConstructorProps) => {
         <select
           id="accountSelector"
           className="form-select"
-          defaultValue={account}
+          value={account}
           onChange={(event) => setAccount(event.target.value)}
         >
           { signerOptions }
         </select>
+      </div>
+      <div>
+        <label>
+          Compiled contracts:
+        </label>
+
+        <input disabled value={selectedContract} className="form-control"/>
       </div>
     </div>
   );
