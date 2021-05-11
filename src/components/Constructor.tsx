@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react"
 
 import { isWeb3Injected, web3Accounts, web3Enable } from "@polkadot/extension-dapp";
-import { RemixSigner } from "../state/signers";
 import { useSelector } from "react-redux";
 import { StateType } from "../store/reducers";
 import DeployInput from "./common/DeployInput";
+import ContractList from "./ContractList";
 
 interface ConstructorProps {
-  signers: RemixSigner [];
 }
 
-const Constructor = ({signers} : ConstructorProps) => {
+const Constructor = ({} : ConstructorProps) => {
+  const { signers } = useSelector((state: StateType) => state.signers);
+
   const [account, setAccount] = useState(signers.length > 0 
     ? signers[0].address 
     : ""
@@ -26,19 +27,6 @@ const Constructor = ({signers} : ConstructorProps) => {
       setSelectedContract(names[0]);
     }
   }, [contracts]);
-
-  // useEffect(() => {
-  //   console.log(isWeb3Injected);
-  //   web3Enable("reef-remix-plugin")
-  //     .then(() => web3Accounts())
-  //     .then((accounts) => {
-  //       console.log(accounts)
-  //       setText("Loaded successfully")
-  //     })
-  //     .catch((err) => {
-  //       setText("Error: " + err.message);
-  //     });
-  // }, [])
 
   const signerOptions = signers
     .map(({address}, index) => (
@@ -83,7 +71,12 @@ const Constructor = ({signers} : ConstructorProps) => {
         </select>
       </div>
 
-      <DeployInput />
+      <DeployInput 
+        contractName={selectedContract}
+        signerAddress={account}
+      />
+
+      <ContractList />
     </div>
   );
 }
