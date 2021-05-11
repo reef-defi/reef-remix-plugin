@@ -8,10 +8,10 @@ interface ContractListProps {
 
 const ContractList = ({} : ContractListProps) => {
   const contracts = useSelector((state: StateType) => state.transactions.contracts);
-
+  console.log(contracts);
   return (
     <div className="mt-1">
-      { contracts }
+      {/* { contracts } */}
     </div>
   );
 }
