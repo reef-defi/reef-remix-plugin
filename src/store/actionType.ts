@@ -1,0 +1,2 @@
+export const CONTRACT_INIT = "CONTRACT_INIT";
+export const CONTRACT_LOAD = "CONTRACT_LOAD";
