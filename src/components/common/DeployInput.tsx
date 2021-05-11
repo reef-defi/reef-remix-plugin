@@ -1,24 +1,33 @@
 import React, { useState } from "react"
+import { useDispatch, useSelector } from "react-redux";
+import { StateType } from "../../store/reducers";
+import { CompiledContract, ABIDescription, ABIParameter } from "@remixproject/plugin-api/lib/compiler/type";
+import Loading from "./Loading";
+import { contractDeployed, contractDeploying } from "../../store/actions/contracts";
+import { deploy } from "../../api/contract";
+import { transactionAddContract } from "../../store/actions/transaction";
+import { fromAscii } from "../../utils";
 
 interface DeployInputProps {
-
+  signerAddress: string;
+  contractName: string;
 }
 
-const DeployInput = ({} : DeployInputProps) => {
-  const [open, setOpen] = useState(false);
-  
+const DeployInput = ({signerAddress, contractName} : DeployInputProps) => {  
+  const {deploying, contracts} = useSelector((state: StateType) => state.contracts);
+  const contractExist = contractName in contracts;
+
+  if (deploying) {
+    return <Loading />;
+  }
+
   return (
     <div className="mt-3">
-      { open 
-        ? <CollapsedDeploy
-            onClose={() => setOpen(false)}
-            submit={() => {}}
-          />
-        : <InlineInputDeploy
-            placeholder="uint8, uint256,..."
-            onOpen={() => setOpen(true)}
-            submit={() => {}}
-          />
+      { contractExist && 
+        <ContractExist 
+          signerAddress={signerAddress}
+          contract={contracts[contractName].payload}
+        />
       }
     </div>
   );
@@ -27,14 +36,65 @@ const DeployInput = ({} : DeployInputProps) => {
 export default DeployInput;
 
 
-interface InlineInputDeployProps {
-  placeholder: string;
-  onOpen: () => void;
-  submit: () => void;
+interface ContractExistProps {
+  signerAddress: string;
+  contract: CompiledContract;
 }
 
-const InlineInputDeploy = ({ placeholder, onOpen, submit} : InlineInputDeployProps) => {
+const ContractExist = ({contract, signerAddress}: ContractExistProps) => {
+  const [open, setOpen] = useState(false);
+
+  console.log(contract);
+
+  const abi = contract.abi
+    .find((a) => a.type === "constructor");
+
+  if (!abi) {
+    return (
+      <div>
+        <a className="btn btn-outline-light btn-text">Deploy</a>
+      </div>
+    );
+  } else {
+    return open
+      ? <CollapsedDeploy abi={abi} signerAddress={signerAddress} onClose={() => setOpen(false)}/>
+      : <InlineInputDeploy abi={abi} signerAddress={signerAddress} onOpen={() => setOpen(true)} />
+  }
+}
+
+interface InlineInputDeployProps {
+  signerAddress: string;
+  abi: ABIDescription;
+  onOpen: () => void;
+}
+
+const InlineInputDeploy = ({ onOpen, abi, signerAddress } : InlineInputDeployProps) => {
   const [value, setValue] = useState("");
+  const dispatch = useDispatch();
+
+  const {signers} = useSelector((state: StateType) => state.signers);
+  const signer = signers.find((wallet) => wallet.address === signerAddress)!;
+  const parameters = abi.inputs! as ABIParameter[];
+
+  const submit = async () => {
+    dispatch(contractDeploying());
+    const paramValues: any[] = value
+      .split(",")
+      .map((param) => param.trim());
+
+    const params = parameters
+      .map(({type}, index) => type.startsWith('bytes') 
+        ? fromAscii(paramValues[index])
+        : paramValues[index]
+      );
+    console.log("Parameters: ", params);
+    const contract = await deploy(abi, params, signer.signer);
+    dispatch(transactionAddContract(contract));
+    dispatch(contractDeployed());
+  };
+
+  const placeholder = parameters
+    .reduce((acc, inp) => (`${acc}${inp.type} ${inp.name}, `), "");
 
   return (
     <div className="d-flex flex-row align-items-center">
@@ -46,31 +106,32 @@ const InlineInputDeploy = ({ placeholder, onOpen, submit} : InlineInputDeployPro
         </div>
         <input 
           value={value}
-          placeholder={placeholder}
+          placeholder={placeholder.slice(0, placeholder.length-2)}
           className="form-control"
           onChange={(event) => setValue(event.target.value)}
         />
       </div>
       <svg onClick={onOpen} xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" className="bi bi-arrow-down text-light border rounded-circle ml-1" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
+        <path fillRule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
       </svg>
     </div>
   );
 }
 
 interface ControlledDeployProps {
-  submit: () => void;
+  signerAddress: string;
+  abi: ABIDescription;
   onClose: () => void;
 }
 
-const CollapsedDeploy = ({onClose, submit}: ControlledDeployProps) => {
-
+const CollapsedDeploy = ({onClose}: ControlledDeployProps) => {
+  const submit = () => {};
   return (
     <div>
       <div className="d-flex align-items-center justify-content-between">
         <span className="text-light">DEPLOY</span>
-        <svg onClick={onClose} xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" className="bi bi-arrow-up text-light border rounded-circle" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+        <svg onClick={onClose} xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" className="bi bi-arrow-up text-light border rounded-circle ml-1" viewBox="0 0 16 16">
+          <path fillRule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
         </svg>
       </div>
 
