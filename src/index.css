@@ -1,8 +1,15 @@
-html, body {
+html, #root, .app {
   width: 100%;
   height: 100%;
 }
 
 body {
-  background-color: #999;
+  background-color: #292d3f;
+}
+
+.btn-text, text {
+  color: whitesmoke !important;
+}
+.btn-text:hover {
+  color: grey !important;
 }
