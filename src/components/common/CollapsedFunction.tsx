@@ -49,12 +49,12 @@ const CollapsedFunction = ({name, parameters, text, error, onClose, submit} : Co
       
       <div className="d-flex justify-content-end mt-1">
         <a className="btn btn-outline-light btn-text" onClick={() => submit(values)}>
-          transact
+          Transact
         </a>
       </div>
-      { text && 
-        <div className={"mt-2 " + error ? "text-danger" : "text-light"}>{text}</div>
-      }
+        <div className={"mt-2 " + (error ? "text-danger" : "text-light")}>
+          {text && text}
+        </div>
     </div>
   )
 }
