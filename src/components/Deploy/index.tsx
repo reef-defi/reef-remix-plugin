@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { StateType } from "../../store/reducers";
 import Loading from "../common/Loading";
-import ContractExist from "./ContractExist";
+import ContractExist from "./ContractDeploy";
 
 interface DeployInputProps {
   signerAddress: string;
