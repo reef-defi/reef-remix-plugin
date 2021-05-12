@@ -15,6 +15,9 @@ export const contractParameters = (parameters: string): any[] =>
     .split(",")
     .map((param) => param.trim());
 
+export const getParameters = (abi?: ABIDescription): ABIParameter[] => 
+  abi ? abi.inputs ? abi.inputs as ABIParameter[] : [] : [];
+
 export const prepareContractParams = (userParams: string, contractParams: ABIParameter[]): any[] => {
   const params = contractParameters(userParams);
   return contractParams

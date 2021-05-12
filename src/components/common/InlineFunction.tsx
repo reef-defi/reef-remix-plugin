@@ -27,12 +27,14 @@ const InlineFunction = ({name, parameters, errorMessage, submit, onOpen} : Inlin
             </a>
           </div>
           <div className="col-8 p-0">
-            <input 
-              value={value}
-              placeholder={placeholder.slice(0, placeholder.length-2)}
-              className="form-control"
-              onChange={(event) => setValue(event.target.value)}
-            />
+            {parameters.length > 0 &&
+              <input 
+                value={value}
+                placeholder={placeholder.slice(0, placeholder.length-2)}
+                className="form-control"
+                onChange={(event) => setValue(event.target.value)}
+              />
+            }
           </div>
         </div>
         <svg onClick={onOpen} xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" className="bi bi-arrow-down text-light border rounded-circle ml-1" viewBox="0 0 16 16">
