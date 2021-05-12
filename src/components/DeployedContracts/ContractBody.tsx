@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react"
-import { Contract } from "ethers";
 import { useSelector } from "react-redux";
 import { StateType } from "../../store/reducers";
-import { CompiledContract, ABIParameter } from "@remixproject/plugin-api/lib/compiler/type";
+import { ABIParameter } from "@remixproject/plugin-api/lib/compiler/type";
 import { contractAttributeDefaultState, ContractAttributeState, ContractHolder } from "../../state";
 import Function from "../common/Function";
+import { contractParameters, getParameters } from "../../utils";
 
 
 interface ContractBodyProps extends ContractHolder { }
@@ -20,6 +20,38 @@ const ContractBody = ({name, contract} : ContractBodyProps) => {
     setState(abi);
   }, [])
 
+  const updateState = (field: ContractAttributeState, index: number) =>
+    setState([
+      ...state.slice(0, index),
+      field,
+      ...state.slice(index+1),
+    ]);
+
+  const submitCollapse = (index: number) => async (values: string[]) => {
+    const field = state[index]
+    const name = field.abi.name!;
+    try {
+      const result = await contract[name](...values);
+      updateState({...field, text: await result.toString(), error: false}, index);
+    } catch (e) {
+      console.error(e);
+      updateState({...field, text: e.message, error: true}, index);
+    }
+  };
+  const submitInline = (index: number) => async (value: string) => {
+    const field = state[index];
+    const name = field.abi.name!;
+    const parameters = contractParameters(value);
+    try {
+      const result = await contract[name](...parameters);
+      const text = await result.toString();
+      updateState({...field, text, error: false}, index);
+    } catch (e) {
+      console.error(e);
+      updateState({...field, text: e.message, error: true}, index);
+    }
+  };
+
   const attributesView = state
     .map(({text, error, loading, abi}, index) => {
       const parameters = abi.inputs ? abi.inputs as ABIParameter[] : [];
@@ -29,19 +61,19 @@ const ContractBody = ({name, contract} : ContractBodyProps) => {
           <Function
             text={text}
             error={error}
-            name={abi.name ? abi.name : ""}
             parameters={parameters}
-            submitCollapse={async (values) => {}}
-            submitInline={async (value) => {}}
+            name={abi.name ? abi.name : ""}
+            submitInline={submitInline(index)}
+            submitCollapse={submitCollapse(index)}
           />
         </div>
       )
     });
 
   return (
-    <div>
+    <>
       {attributesView}
-    </div>
+    </>
   );
 }
 
