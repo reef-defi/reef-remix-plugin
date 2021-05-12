@@ -11,7 +11,7 @@ import reportWebVitals from "./reportWebVitals";
 import { configureStore } from "./store";
 import { Provider } from "react-redux";
 import { StateType } from "./store/reducers";
-import { contractLoad } from "./store/actions/contracts";
+import { contractLoad } from "./store/actions/compiledContracts";
 
 declare global {
   interface Window {

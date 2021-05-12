@@ -2,7 +2,7 @@ import { ReefSigner } from "@reef-defi/hardhat-reef/dist/src/proxies/signers/Ree
 import { Contract, ContractFactory, Signer } from "ethers";
 import { CompiledContract } from "@remixproject/plugin-api/lib/compiler/type";
 import { useDispatch, useSelector } from "react-redux";
-import { contractDeploying, contractDeployed, contractError } from "../store/actions/contracts";
+import { contractDeploying, contractDeployed, contractError } from "../store/actions/compiledContracts";
 import { transactionAddContract } from "../store/actions/transaction";
 import { RemixSigner } from "../state/signers";
 import { StateType } from "../store/reducers";

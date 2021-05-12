@@ -1,5 +1,5 @@
 import { combineReducers} from 'redux';
-import { ContractReducer, contractReducer } from './contracts';
+import { ContractReducer, contractReducer } from './compiledContracts';
 import { SignersReducer, signersReducer } from './signers';
 import { TransactionReducer, transactionReducer } from './transaction';
 

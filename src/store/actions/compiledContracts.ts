@@ -1,22 +1,22 @@
-import { CONTRACT_DEPLOYED, CONTRACT_DEPLOYING, CONTRACT_ERROR, CONTRACT_LOAD } from "../actionType";
+import { COMPILED_CONTRACT_DEPLOYED, COMPILED_CONTRACT_DEPLOYING, COMPILED_CONTRACT_ERROR, COMPILED_CONTRACT_LOAD } from "../actionType";
 
 import { CompilationResult } from "@remixproject/plugin-api/lib/compiler/type";
 
 interface ContractLoad {
-  type: typeof CONTRACT_LOAD;
+  type: typeof COMPILED_CONTRACT_LOAD;
   data: CompilationResult | null;
 }
 
 interface ContractDeploying {
-  type: typeof CONTRACT_DEPLOYING;
+  type: typeof COMPILED_CONTRACT_DEPLOYING;
 }
 
 interface ContractDeployed {
-  type: typeof CONTRACT_DEPLOYED;
+  type: typeof COMPILED_CONTRACT_DEPLOYED;
 }
 
 interface ContractError {
-  type: typeof CONTRACT_ERROR,
+  type: typeof COMPILED_CONTRACT_ERROR,
   message: string;
 }
 
@@ -28,18 +28,18 @@ export type ContractType =
 
 export const contractLoad = (data: CompilationResult | null): ContractLoad => ({
   data,
-  type: CONTRACT_LOAD,
+  type: COMPILED_CONTRACT_LOAD,
 });
 
 export const contractDeployed = (): ContractDeployed => ({
-  type: CONTRACT_DEPLOYED
+  type: COMPILED_CONTRACT_DEPLOYED
 });
 
 export const contractDeploying = (): ContractDeploying => ({
-  type: CONTRACT_DEPLOYING
+  type: COMPILED_CONTRACT_DEPLOYING
 });
 
 export const contractError = (message: string): ContractError => ({
-  type: CONTRACT_ERROR,
+  type: COMPILED_CONTRACT_ERROR,
   message
 });
