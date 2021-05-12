@@ -17,15 +17,17 @@ const Function = ({name, text, error, parameters, submitInline, submitCollapse} 
   return (open ?
     <CollapsedFunction
       name={name}
+      text={text}
+      error={error}
       parameters={parameters}
-      onClose={() => setOpen(false)}
       submit={submitCollapse}
-      errorMessage={text}
+      onClose={() => setOpen(false)}
     /> :
     <InlineFunction
       name={name}
+      text={text}
+      error={error}
       parameters={parameters}
-      errorMessage={text}
       submit={submitInline}
       onOpen={() => setOpen(true)}
     />

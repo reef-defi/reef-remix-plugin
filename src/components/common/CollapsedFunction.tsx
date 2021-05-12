@@ -3,13 +3,14 @@ import { ABIParameter } from "@remixproject/plugin-api/lib/compiler/type";
 
 interface CollapsedFunctionProps {
   name: string;
+  text: string;
+  error: boolean;
   parameters: ABIParameter[];
-  errorMessage: string;
   onClose: () => void;
   submit: (value: string[]) => Promise<void>;
 }
 
-const CollapsedFunction = ({name, parameters, errorMessage, onClose, submit} : CollapsedFunctionProps) => {
+const CollapsedFunction = ({name, parameters, text, error, onClose, submit} : CollapsedFunctionProps) => {
   const [values, setValues] = useState<string[]>(Array(parameters.length).fill(""));
 
   const onChange = (value: string, index: number) => setValues([
@@ -51,8 +52,8 @@ const CollapsedFunction = ({name, parameters, errorMessage, onClose, submit} : C
           transact
         </a>
       </div>
-      { errorMessage && 
-        <div className="text-danger mt-2">{errorMessage}</div>
+      { text && 
+        <div className={"mt-2 " + error ? "text-danger" : "text-light"}>{text}</div>
       }
     </div>
   )

@@ -5,13 +5,14 @@ import { ABIParameter } from "@remixproject/plugin-api/lib/compiler/type";
 
 interface InlineFunctionProps {
   name: string;
-  errorMessage: string;
+  text: string;
+  error: boolean;
   parameters: ABIParameter[];
   onOpen: () => void;
   submit: (value: string) => void;
 }
 
-const InlineFunction = ({name, parameters, errorMessage, submit, onOpen} : InlineFunctionProps) => {
+const InlineFunction = ({name, parameters, text, error, submit, onOpen} : InlineFunctionProps) => {
   const [value, setValue] = useState("");
 
   const placeholder = parameters
@@ -41,9 +42,9 @@ const InlineFunction = ({name, parameters, errorMessage, submit, onOpen} : Inlin
           <path fillRule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
         </svg>
       </div>
-      { errorMessage && 
-        <div className="text-danger mt-2">
-          {errorMessage}
+      { text && 
+        <div className={"mt-1 " + error ? "text-danger" : "text-light"}>
+          {text}
         </div>
       }
     </div>
