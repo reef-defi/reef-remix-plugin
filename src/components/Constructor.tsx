@@ -19,7 +19,7 @@ const Constructor = ({} : ConstructorProps) => {
   );
   const [selectedContract, setSelectedContract] = useState("");
 
-  const contracts = useSelector((state: StateType) => state.contracts);
+  const contracts = useSelector((state: StateType) => state.compiledContracts);
   console.log(contracts);
 
   useEffect(() => {
