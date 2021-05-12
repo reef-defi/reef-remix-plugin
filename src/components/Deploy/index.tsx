@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { StateType } from "../../store/reducers";
 import Loading from "../common/Loading";
 import ContractDeploy from "./ContractDeploy";
+import ContractRetrieve from "./ContractRetrieve";
 
 interface DeployInputProps {
   signerAddress: string;
@@ -23,7 +24,14 @@ const DeployInput = ({signerAddress, contractName} : DeployInputProps) => {
         <>
           <ContractDeploy 
             signerAddress={signerAddress}
-            contractName={contractName} //contracts[contractName].payload
+            contractName={contractName}
+            />
+          <div className="lead text-light text-center">
+            OR
+          </div>
+          <ContractRetrieve
+            signerAddress={signerAddress}
+            contractName={contractName}
           />
         </>
       }
