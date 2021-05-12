@@ -20,11 +20,11 @@ export const retrieveContract = (contractAbi: CompiledContract, address: string,
   return new Contract(address, contractAbi.abi, signer as Signer);
 }
 
-export const submitDeploy = async (params: any[], contract: CompiledContract, signer: ReefSigner, dispatch: Dispatch<any>) => {
+export const submitDeploy = async (contractName: string, params: any[], contract: CompiledContract, signer: ReefSigner, dispatch: Dispatch<any>) => {
   dispatch(compiledContractDeploying());
   try {
     const newContract = await deploy(contract, params, signer);
-    dispatch(contractAdd(newContract));
+    dispatch(contractAdd(contractName, newContract));
     dispatch(compiledContractDeployed());
   } catch (e) {
     console.error(e);

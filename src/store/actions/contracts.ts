@@ -1,9 +1,11 @@
 import { Contract } from "ethers";
+import { ContractHolder } from "../../state";
 import { CONTRACTS_ADD, CONTRACTS_REMOVE_ALL, CONTRACTS_REMOVE } from "../actionType";
+
 
 interface ContractAdd {
   type: typeof CONTRACTS_ADD;
-  contract: Contract;
+  contract: ContractHolder;
 }
 
 interface ContractRemove {
@@ -20,9 +22,9 @@ export type ContractActionType =
   | ContractRemove
   | ContractRemoveAll;
 
-export const contractAdd = (contract: Contract): ContractAdd => ({
+export const contractAdd = (name: string, contract: Contract): ContractAdd => ({
   type: CONTRACTS_ADD,
-  contract,
+  contract: {name, contract}
 });
 
 export const contractRemove = (index: number): ContractRemove => ({

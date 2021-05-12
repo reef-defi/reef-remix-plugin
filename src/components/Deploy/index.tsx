@@ -22,7 +22,7 @@ const DeployInput = ({signerAddress, contractName} : DeployInputProps) => {
       { contractExist && 
         <ContractExist 
           signerAddress={signerAddress}
-          contract={contracts[contractName].payload}
+          contractName={contractName} //contracts[contractName].payload
         />
       }
     </div>

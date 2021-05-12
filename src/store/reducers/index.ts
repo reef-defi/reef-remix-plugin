@@ -1,7 +1,7 @@
 import { combineReducers} from 'redux';
 import { CompiledContractReducer, compiledContractReducer } from './compiledContracts';
 import { SignersReducer, signersReducer } from './signers';
-import { ContractReducer, contractsReducer } from './contracts';
+import { ContractsReducer, contractsReducer } from './contracts';
 
 
 const rootReducer = combineReducers({
@@ -12,7 +12,7 @@ const rootReducer = combineReducers({
 
 export interface StateType {
   compiledContracts: CompiledContractReducer,
-  contracts: ContractReducer,
+  contracts: ContractsReducer,
   signers: SignersReducer,
 }
 

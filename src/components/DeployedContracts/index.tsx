@@ -13,7 +13,7 @@ const DeployedContracts = ({} : DeployedContractsProps) => {
   const contractViews = contracts
   .map((contract) => (
     <ContractView
-      contract={contract}
+      contract={contract.contract}
     />
   ))
   return (
