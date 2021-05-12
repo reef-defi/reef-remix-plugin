@@ -3,9 +3,9 @@ import { CONTRACT_DEPLOYED, CONTRACT_DEPLOYING, CONTRACT_ERROR, CONTRACT_LOAD } 
 import { CompilationResult, CompiledContract } from "@remixproject/plugin-api/lib/compiler/type";
 
 interface Contract {
-  payload: CompiledContract;
   filename: string;
   contractName: string;
+  payload: CompiledContract;
 }
 
 interface Contracts {

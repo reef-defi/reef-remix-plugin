@@ -27,6 +27,7 @@ export const submitDeploy = async (params: any[], contract: CompiledContract, si
     dispatch(transactionAddContract(newContract));
     dispatch(contractDeployed());
   } catch (e) {
+    console.error(e);
     dispatch(contractError(e.message));
     dispatch(contractDeployed());
   }
