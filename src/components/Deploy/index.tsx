@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { StateType } from "../../store/reducers";
 import Loading from "../common/Loading";
-import ContractExist from "./ContractDeploy";
+import ContractDeploy from "./ContractDeploy";
 
 interface DeployInputProps {
   signerAddress: string;
@@ -19,11 +19,13 @@ const DeployInput = ({signerAddress, contractName} : DeployInputProps) => {
 
   return (
     <div className="mt-3">
-      { contractExist && 
-        <ContractExist 
-          signerAddress={signerAddress}
-          contractName={contractName} //contracts[contractName].payload
-        />
+      { contractExist &&
+        <>
+          <ContractDeploy 
+            signerAddress={signerAddress}
+            contractName={contractName} //contracts[contractName].payload
+          />
+        </>
       }
     </div>
   );
