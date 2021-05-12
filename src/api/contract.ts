@@ -1,12 +1,10 @@
-import { ReefSigner } from "@reef-defi/hardhat-reef/dist/src/proxies/signers/ReefSigner";
+import { Dispatch } from "redux";
 import { Contract, ContractFactory, Signer } from "ethers";
+import { ReefSigner } from "@reef-defi/hardhat-reef/dist/src/proxies/signers/ReefSigner";
 import { CompiledContract } from "@remixproject/plugin-api/lib/compiler/type";
-import { useDispatch, useSelector } from "react-redux";
-import { compiledContractDeploying, compiledContractDeployed, compiledContractError } from "../store/actions/compiledContracts";
 import { contractAdd } from "../store/actions/contracts";
 import { RemixSigner } from "../state/signers";
-import { StateType } from "../store/reducers";
-import { Dispatch } from "redux";
+import { compiledContractDeploying, compiledContractDeployed, compiledContractError } from "../store/actions/compiledContracts";
 
 
 export const deploy = async (contractAbi: CompiledContract, params: any[], signer: ReefSigner): Promise<Contract> => {
