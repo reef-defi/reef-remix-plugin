@@ -11,7 +11,7 @@ import reportWebVitals from "./reportWebVitals";
 import { configureStore } from "./store";
 import { Provider } from "react-redux";
 import { StateType } from "./store/reducers";
-import { contractLoad } from "./store/actions/contracts";
+import { compiledContractLoad } from "./store/actions/compiledContracts";
 
 declare global {
   interface Window {
@@ -44,10 +44,10 @@ client.onload(async () => {
 
 const initPlugin = async (client: IClient, dispatch: IDispatch) => {
   const result = await client.solidity.getCompilationResult()
-  dispatch(contractLoad(result.data));
+  dispatch(compiledContractLoad(result.data));
 
   client.solidity.on('compilationFinished', async () => {
     const result = await client.solidity.getCompilationResult()
-    dispatch(contractLoad(result.data));
+    dispatch(compiledContractLoad(result.data));
   })
 }

@@ -1,12 +1,10 @@
-import { ReefSigner } from "@reef-defi/hardhat-reef/dist/src/proxies/signers/ReefSigner";
-import { Contract, ContractFactory, Signer } from "ethers";
-import { CompiledContract } from "@remixproject/plugin-api/lib/compiler/type";
-import { useDispatch, useSelector } from "react-redux";
-import { contractDeploying, contractDeployed, contractError } from "../store/actions/contracts";
-import { transactionAddContract } from "../store/actions/transaction";
-import { RemixSigner } from "../state/signers";
-import { StateType } from "../store/reducers";
 import { Dispatch } from "redux";
+import { Contract, ContractFactory, Signer } from "ethers";
+import { ReefSigner } from "@reef-defi/hardhat-reef/dist/src/proxies/signers/ReefSigner";
+import { CompiledContract } from "@remixproject/plugin-api/lib/compiler/type";
+import { contractAdd } from "../store/actions/contracts";
+import { RemixSigner } from "../state/signers";
+import { compiledContractDeploying, compiledContractDeployed, compiledContractError } from "../store/actions/compiledContracts";
 
 
 export const deploy = async (contractAbi: CompiledContract, params: any[], signer: ReefSigner): Promise<Contract> => {
@@ -20,15 +18,16 @@ export const retrieveContract = (contractAbi: CompiledContract, address: string,
   return new Contract(address, contractAbi.abi, signer as Signer);
 }
 
-export const submitDeploy = async (params: any[], contract: CompiledContract, signer: ReefSigner, dispatch: Dispatch<any>) => {
-  dispatch(contractDeploying());
+export const submitDeploy = async (contractName: string, params: any[], contract: CompiledContract, signer: ReefSigner, dispatch: Dispatch<any>) => {
+  dispatch(compiledContractDeploying());
   try {
     const newContract = await deploy(contract, params, signer);
-    dispatch(transactionAddContract(newContract));
-    dispatch(contractDeployed());
+    dispatch(contractAdd(contractName, newContract));
+    dispatch(compiledContractDeployed());
   } catch (e) {
-    dispatch(contractError(e.message));
-    dispatch(contractDeployed());
+    console.error(e);
+    dispatch(compiledContractError(e.message));
+    dispatch(compiledContractDeployed());
   }
 }
 

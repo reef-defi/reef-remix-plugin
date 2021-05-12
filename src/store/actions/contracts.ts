@@ -1,45 +1,37 @@
-import { CONTRACT_DEPLOYED, CONTRACT_DEPLOYING, CONTRACT_ERROR, CONTRACT_LOAD } from "../actionType";
+import { Contract } from "ethers";
+import { ContractHolder } from "../../state";
+import { CONTRACTS_ADD, CONTRACTS_REMOVE_ALL, CONTRACTS_REMOVE } from "../actionType";
 
-import { CompilationResult } from "@remixproject/plugin-api/lib/compiler/type";
 
-interface ContractLoad {
-  type: typeof CONTRACT_LOAD;
-  data: CompilationResult | null;
+interface ContractAdd {
+  type: typeof CONTRACTS_ADD;
+  contract: ContractHolder;
 }
 
-interface ContractDeploying {
-  type: typeof CONTRACT_DEPLOYING;
+interface ContractRemove {
+  type: typeof CONTRACTS_REMOVE;
+  index: number;
 }
 
-interface ContractDeployed {
-  type: typeof CONTRACT_DEPLOYED;
+interface ContractRemoveAll {
+  type: typeof CONTRACTS_REMOVE_ALL
 }
 
-interface ContractError {
-  type: typeof CONTRACT_ERROR,
-  message: string;
-}
+export type ContractActionType =
+  | ContractAdd
+  | ContractRemove
+  | ContractRemoveAll;
 
-export type ContractType = 
-  | ContractLoad
-  | ContractError
-  | ContractDeployed
-  | ContractDeploying;
-
-export const contractLoad = (data: CompilationResult | null): ContractLoad => ({
-  data,
-  type: CONTRACT_LOAD,
+export const contractAdd = (name: string, contract: Contract): ContractAdd => ({
+  type: CONTRACTS_ADD,
+  contract: {name, contract}
 });
 
-export const contractDeployed = (): ContractDeployed => ({
-  type: CONTRACT_DEPLOYED
+export const contractRemove = (index: number): ContractRemove => ({
+  type: CONTRACTS_REMOVE,
+  index,
 });
 
-export const contractDeploying = (): ContractDeploying => ({
-  type: CONTRACT_DEPLOYING
-});
-
-export const contractError = (message: string): ContractError => ({
-  type: CONTRACT_ERROR,
-  message
+export const contractRemoveAll = (): ContractRemoveAll => ({
+  type: CONTRACTS_REMOVE_ALL,
 });
