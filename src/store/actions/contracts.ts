@@ -1,18 +1,18 @@
 import { Contract } from "ethers";
-import { TRANSACTION_ADD_CONTRACT, TRANSACTION_REMOVE_ALL_CONTRACT, TRANSACTION_REMOVE_CONTRACT } from "../actionType";
+import { CONTRACTS_ADD, CONTRACTS_REMOVE_ALL, CONTRACTS_REMOVE } from "../actionType";
 
 interface TransactionAddContract {
-  type: typeof TRANSACTION_ADD_CONTRACT;
+  type: typeof CONTRACTS_ADD;
   contract: Contract;
 }
 
 interface TransactionDeleteContract {
-  type: typeof TRANSACTION_REMOVE_CONTRACT;
+  type: typeof CONTRACTS_REMOVE;
   index: number;
 }
 
 interface TransactionDeleteAllContracts {
-  type: typeof TRANSACTION_REMOVE_ALL_CONTRACT
+  type: typeof CONTRACTS_REMOVE_ALL
 }
 
 export type TransactionActionType =
@@ -21,15 +21,15 @@ export type TransactionActionType =
   | TransactionDeleteAllContracts;
 
 export const transactionAddContract = (contract: Contract): TransactionAddContract => ({
-  type: TRANSACTION_ADD_CONTRACT,
+  type: CONTRACTS_ADD,
   contract,
 });
 
 export const transactionDeleteContract = (index: number): TransactionDeleteContract => ({
-  type: TRANSACTION_REMOVE_CONTRACT,
+  type: CONTRACTS_REMOVE,
   index,
 });
 
 export const transactionDeleteAllContract = (): TransactionDeleteAllContracts => ({
-  type: TRANSACTION_REMOVE_ALL_CONTRACT,
+  type: CONTRACTS_REMOVE_ALL,
 });
