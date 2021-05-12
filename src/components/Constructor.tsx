@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { StateType } from "../store/reducers";
 import ContractList from "./ContractList";
 import Deploy from "./Deploy";
+import DeployedContracts from "./DeployedContracts";
 
 interface ConstructorProps {
 }
@@ -75,8 +76,8 @@ const Constructor = ({} : ConstructorProps) => {
         contractName={selectedContract}
         signerAddress={account}
       />
-
-      <ContractList />
+      
+      <DeployedContracts />
     </div>
   );
 }
