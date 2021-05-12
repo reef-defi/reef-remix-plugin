@@ -11,11 +11,9 @@ const DeployedContracts = ({} : DeployedContractsProps) => {
   const { contracts } = useSelector((state: StateType) => state.contracts);
   console.log("Contracts: ", contracts);
   const contractViews = contracts
-  .map((contract) => (
-    <ContractView
-      contract={contract.contract}
-    />
-  ))
+    .map((contract, index) => 
+      (<ContractView {...contract} key={index} />));
+
   return (
     <div className="mt-3 pb-2 border-bottom border-secondary">
       <div className="d-flex justify-content-between align-items-center">

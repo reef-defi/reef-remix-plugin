@@ -1,29 +1,24 @@
 import React, { useEffect, useState } from "react"
-
-import { isWeb3Injected, web3Accounts, web3Enable } from "@polkadot/extension-dapp";
 import { useSelector } from "react-redux";
+import { isWeb3Injected, web3Accounts, web3Enable } from "@polkadot/extension-dapp";
+
 import { StateType } from "../store/reducers";
-import ContractList from "./ContractList";
 import Deploy from "./Deploy";
 import DeployedContracts from "./DeployedContracts";
 
-interface ConstructorProps {
-}
+interface ConstructorProps { }
 
 const Constructor = ({} : ConstructorProps) => {
-  const { signers } = useSelector((state: StateType) => state.signers);
+  const {contracts} = useSelector((state: StateType) => state.compiledContracts);
 
-  const [account, setAccount] = useState(signers.length > 0 
-    ? signers[0].address 
-    : ""
-  );
+  const { signers } = useSelector((state: StateType) => state.signers);
+  const [account, setAccount] = useState(signers.length > 0 ? signers[0].address : "");
+
   const [selectedContract, setSelectedContract] = useState("");
 
-  const contracts = useSelector((state: StateType) => state.compiledContracts);
-  console.log(contracts);
 
   useEffect(() => {
-    const names = Object.keys(contracts.contracts);
+    const names = Object.keys(contracts);
     if (names.length > 0) {
       setSelectedContract(names[0]);
     }
@@ -35,7 +30,7 @@ const Constructor = ({} : ConstructorProps) => {
     ));
 
   const contractOptions = Object
-    .keys(contracts.contracts)
+    .keys(contracts)
     .map((contract, index) => (
       <option value={contract} key={index}>
         {contract}

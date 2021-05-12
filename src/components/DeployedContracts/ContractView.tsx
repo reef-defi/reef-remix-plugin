@@ -1,15 +1,12 @@
 import React, { useState } from "react"
 import ContractBody from "./ContractBody";
 import ContractHeader from "./ContractHeader";
-import { Contract } from "ethers";
-import { CompiledContract, ABIParameter } from "@remixproject/plugin-api/lib/compiler/type";
+import { ContractHolder } from "../../state";
 
 
-interface ContractViewProps {
-  contract: Contract;
-}
+interface ContractViewProps extends ContractHolder { }
 
-const ContractView = ({contract} : ContractViewProps) => {
+const ContractView = (params : ContractViewProps) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -20,11 +17,7 @@ const ContractView = ({contract} : ContractViewProps) => {
         onClick={() => setOpen(!open)}
         onRemove={() => {}}
       />
-      { open && 
-        <ContractBody
-          contract={contract}
-        /> 
-      }
+      { open && <ContractBody {...params} /> }
     </div>
   );
 }

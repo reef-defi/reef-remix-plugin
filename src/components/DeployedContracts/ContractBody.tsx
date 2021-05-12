@@ -1,30 +1,47 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Contract } from "ethers";
 import { useSelector } from "react-redux";
 import { StateType } from "../../store/reducers";
 import { CompiledContract, ABIParameter } from "@remixproject/plugin-api/lib/compiler/type";
+import { contractAttributeDefaultState, ContractAttributeState, ContractHolder } from "../../state";
+import Function from "../common/Function";
 
 
-interface ContractBodyProps {
-  contract: Contract;
-}
+interface ContractBodyProps extends ContractHolder { }
 
-const ContractBody = ({contract} : ContractBodyProps) => {
-  const {contracts} = useSelector((state: StateType) => state.contracts);
-  // contract.
-  // const abi = Object.keys(contracts)
-  // .find((name) => contracts[name].)
+const ContractBody = ({name, contract} : ContractBodyProps) => {
+  const { contracts } = useSelector((state: StateType) => state.compiledContracts);
+  const [state, setState] = useState<ContractAttributeState[]>([]);
 
+  useEffect(() => {
+    const abi = contracts[name]!.payload.abi
+      .filter((statement) => statement.type !== "constructor")
+      .map((desc) => contractAttributeDefaultState(desc));
+    setState(abi);
+  }, [])
 
-  // const abi = Array(8);
-  console.log("Contract: ", contract);
+  const attributesView = state
+    .map(({text, error, loading, abi}, index) => {
+      const parameters = abi.inputs ? abi.inputs as ABIParameter[] : [];
 
-  // const [open, setOpen] = useState(Array(abi.length).fill(false));
-  // const [output, setOutput] = useState(Array(abi.length).fill(""));
-  // const [errors, setErrors] = useState(Array(abi.length).fill(false));
-  
+      return (
+        <div className="mt-1" key={index}>
+          <Function
+            text={text}
+            error={error}
+            name={abi.name ? abi.name : ""}
+            parameters={parameters}
+            submitCollapse={async (values) => {}}
+            submitInline={async (value) => {}}
+          />
+        </div>
+      )
+    });
+
   return (
-    <div></div>
+    <div>
+      {attributesView}
+    </div>
   );
 }
 
