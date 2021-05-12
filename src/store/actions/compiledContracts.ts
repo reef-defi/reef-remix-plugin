@@ -20,26 +20,26 @@ interface ContractError {
   message: string;
 }
 
-export type ContractType = 
+export type CompiledContractType = 
   | ContractLoad
   | ContractError
   | ContractDeployed
   | ContractDeploying;
 
-export const contractLoad = (data: CompilationResult | null): ContractLoad => ({
+export const compiledContractLoad = (data: CompilationResult | null): ContractLoad => ({
   data,
   type: COMPILED_CONTRACT_LOAD,
 });
 
-export const contractDeployed = (): ContractDeployed => ({
+export const compiledContractDeployed = (): ContractDeployed => ({
   type: COMPILED_CONTRACT_DEPLOYED
 });
 
-export const contractDeploying = (): ContractDeploying => ({
+export const compiledContractDeploying = (): ContractDeploying => ({
   type: COMPILED_CONTRACT_DEPLOYING
 });
 
-export const contractError = (message: string): ContractError => ({
+export const compiledContractError = (message: string): ContractError => ({
   type: COMPILED_CONTRACT_ERROR,
   message
 });

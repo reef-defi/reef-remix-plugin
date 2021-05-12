@@ -1,4 +1,4 @@
-import { ContractType } from "../actions/compiledContracts";
+import { CompiledContractType } from "../actions/compiledContracts";
 import { COMPILED_CONTRACT_DEPLOYED, COMPILED_CONTRACT_DEPLOYING, COMPILED_CONTRACT_ERROR, COMPILED_CONTRACT_LOAD } from "../actionType";
 import { CompilationResult, CompiledContract } from "@remixproject/plugin-api/lib/compiler/type";
 
@@ -12,19 +12,19 @@ interface Contracts {
   [name: string]: Contract;
 }
 
-export interface ContractReducer {
+export interface CompiledContractReducer {
   deploying: boolean;
   contracts: Contracts;
   errorMessage: string;
 }
 
-const initialState: ContractReducer = {
+const initialState: CompiledContractReducer = {
   deploying: false,
   contracts: {},
   errorMessage: "",
 };
 
-export const contractReducer = (state=initialState, action: ContractType): ContractReducer => {
+export const compiledContractReducer = (state=initialState, action: CompiledContractType): CompiledContractReducer => {
   switch (action.type) {
     case COMPILED_CONTRACT_LOAD:
       return {...state, contracts: normalizeCompilationOutput(action.data)};

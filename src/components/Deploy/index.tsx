@@ -10,7 +10,7 @@ interface DeployInputProps {
 }
 
 const DeployInput = ({signerAddress, contractName} : DeployInputProps) => {  
-  const {deploying, contracts} = useSelector((state: StateType) => state.contracts);
+  const {deploying, contracts} = useSelector((state: StateType) => state.compiledContracts);
   const contractExist = contractName in contracts;
 
   if (deploying) {

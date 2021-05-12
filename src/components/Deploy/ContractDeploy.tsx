@@ -15,7 +15,7 @@ interface ContractDeployProps {
 const ContractDeploy = ({contract, signerAddress}: ContractDeployProps) => {
   const dispatch = useDispatch();
   const {signers} = useSelector((state: StateType) => state.signers);
-  const { errorMessage } = useSelector((state: StateType) => state.contracts);
+  const { errorMessage } = useSelector((state: StateType) => state.compiledContracts);
   
   const signer = getSigner(signers, signerAddress)
   const constructorAbi = getConstructor(contract.abi);

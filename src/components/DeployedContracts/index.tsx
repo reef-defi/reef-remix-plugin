@@ -8,7 +8,7 @@ interface DeployedContractsProps {
 }
 
 const DeployedContracts = ({} : DeployedContractsProps) => {
-  const { contracts } = useSelector((state: StateType) => state.transactions);
+  const { contracts } = useSelector((state: StateType) => state.contracts);
   console.log("Contracts: ", contracts);
   const contractViews = contracts
   .map((contract) => (

@@ -7,7 +7,7 @@ interface ContractListProps {
 }
 
 const ContractList = ({} : ContractListProps) => {
-  const contracts = useSelector((state: StateType) => state.transactions.contracts);
+  const {contracts} = useSelector((state: StateType) => state.contracts);
   console.log(contracts);
   return (
     <div className="mt-1">

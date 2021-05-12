@@ -2,8 +2,8 @@ import { ReefSigner } from "@reef-defi/hardhat-reef/dist/src/proxies/signers/Ree
 import { Contract, ContractFactory, Signer } from "ethers";
 import { CompiledContract } from "@remixproject/plugin-api/lib/compiler/type";
 import { useDispatch, useSelector } from "react-redux";
-import { contractDeploying, contractDeployed, contractError } from "../store/actions/compiledContracts";
-import { transactionAddContract } from "../store/actions/contracts";
+import { compiledContractDeploying, compiledContractDeployed, compiledContractError } from "../store/actions/compiledContracts";
+import { contractAdd } from "../store/actions/contracts";
 import { RemixSigner } from "../state/signers";
 import { StateType } from "../store/reducers";
 import { Dispatch } from "redux";
@@ -21,15 +21,15 @@ export const retrieveContract = (contractAbi: CompiledContract, address: string,
 }
 
 export const submitDeploy = async (params: any[], contract: CompiledContract, signer: ReefSigner, dispatch: Dispatch<any>) => {
-  dispatch(contractDeploying());
+  dispatch(compiledContractDeploying());
   try {
     const newContract = await deploy(contract, params, signer);
-    dispatch(transactionAddContract(newContract));
-    dispatch(contractDeployed());
+    dispatch(contractAdd(newContract));
+    dispatch(compiledContractDeployed());
   } catch (e) {
     console.error(e);
-    dispatch(contractError(e.message));
-    dispatch(contractDeployed());
+    dispatch(compiledContractError(e.message));
+    dispatch(compiledContractDeployed());
   }
 }
 
