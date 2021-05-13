@@ -5,7 +5,7 @@ import { StateType } from "../../store/reducers";
 import { getConstructor, getParameters, prepareContractParams } from "../../utils";
 import { ABIParameter } from "@remixproject/plugin-api/lib/compiler/type";
 
-import Function from "../common/Function";
+import Function from "../Function/Function";
 
 interface ContractDeployProps {
   contractName: string;

@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { StateType } from "../../store/reducers";
 import { ABIParameter } from "@remixproject/plugin-api/lib/compiler/type";
 import { contractAttributeDefaultState, ContractAttributeState, ContractHolder } from "../../state";
-import Function from "../common/Function";
+import Function from "../Function/Function";
 import { contractParameters, getParameters } from "../../utils";
 
 
