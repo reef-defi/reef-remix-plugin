@@ -2,10 +2,9 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getSigner, submitDeploy } from "../../api/contract";
 import { StateType } from "../../store/reducers";
-import { getConstructor, getParameters, prepareContractParams } from "../../utils";
-import { ABIParameter } from "@remixproject/plugin-api/lib/compiler/type";
+import { getConstructor, getParameters, prepareParameters } from "../../utils";
 
-import Function from "../common/Function";
+import Function from "../Function/Function";
 
 interface ContractDeployProps {
   contractName: string;
@@ -29,7 +28,7 @@ const ContractDeploy = ({contractName, signerAddress}: ContractDeployProps) => {
   const submitCollapse = async (values: string[]) => 
     await submitDeploy(contractName, values, contract, signer.signer, dispatch);
   const submitInline = async (value: string) => {
-    const params = prepareContractParams(value, parameters);
+    const params = prepareParameters(value);
     await submitDeploy(contractName, params, contract, signer.signer, dispatch);
   };
 

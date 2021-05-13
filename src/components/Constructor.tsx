@@ -5,6 +5,7 @@ import { isWeb3Injected, web3Accounts, web3Enable } from "@polkadot/extension-da
 import { StateType } from "../store/reducers";
 import Deploy from "./Deploy";
 import DeployedContracts from "./DeployedContracts";
+import Copy from "./common/Copy";
 
 interface ConstructorProps { }
 
@@ -44,14 +45,17 @@ const Constructor = ({} : ConstructorProps) => {
           Accounts:
         </label>
 
-        <select
-          id="accountSelector"
-          className="form-select"
-          value={account}
-          onChange={(event) => setAccount(event.target.value)}
-        >
-          { signerOptions }
-        </select>
+        <div className="d-flex flex-row align-items-center">
+          <select
+            id="accountSelector"
+            className="form-select flex-fill mr-1"
+            value={account}
+            onChange={(event) => setAccount(event.target.value)}
+          >
+            { signerOptions }
+          </select>
+          <Copy value={account} />
+        </div>
       </div>
       <div>
         <label>

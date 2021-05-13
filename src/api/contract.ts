@@ -6,7 +6,6 @@ import { contractAdd } from "../store/actions/contracts";
 import { RemixSigner } from "../state/signers";
 import { compiledContractDeploying, compiledContractDeployed, compiledContractError } from "../store/actions/compiledContracts";
 
-
 export const deploy = async (contractAbi: CompiledContract, params: any[], signer: ReefSigner): Promise<Contract> => {
   return await ContractFactory
     .fromSolidity(contractAbi)

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux";
 import { StateType } from "../../store/reducers";
-import { ABIParameter } from "@remixproject/plugin-api/lib/compiler/type";
+import { ABIParameter, FunctionDescription } from "@remixproject/plugin-api/lib/compiler/type";
 import { contractAttributeDefaultState, ContractAttributeState, ContractHolder } from "../../state";
-import Function from "../common/Function";
-import { contractParameters, getParameters } from "../../utils";
+import Function from "../Function/Function";
+import { prepareParameters } from "../../utils";
 
 
 interface ContractBodyProps extends ContractHolder { }
@@ -15,7 +15,7 @@ const ContractBody = ({name, contract} : ContractBodyProps) => {
 
   useEffect(() => {
     const abi = contracts[name]!.payload.abi
-      .filter((statement) => statement.type !== "constructor")
+      .filter((statement) => statement.type === "function")
       .map((desc) => contractAttributeDefaultState(desc));
     setState(abi);
   }, [])
@@ -41,10 +41,12 @@ const ContractBody = ({name, contract} : ContractBodyProps) => {
   const submitInline = (index: number) => async (value: string) => {
     const field = state[index];
     const name = field.abi.name!;
-    const parameters = contractParameters(value);
+    const parameters = prepareParameters(value);
     try {
       const result = await contract[name](...parameters);
-      const text = await result.toString();
+      // effect allows filters only functions so we can cast them in FunctionDescription
+      const abi = state[index].abi as FunctionDescription;
+      const text = abi.outputs && abi.outputs.length !== 0 ? await result.toString() : "";
       updateState({...field, text, error: false}, index);
     } catch (e) {
       console.error(e);
@@ -53,7 +55,7 @@ const ContractBody = ({name, contract} : ContractBodyProps) => {
   };
 
   const attributesView = state
-    .map(({text, error, loading, abi}, index) => {
+    .map(({text, error, abi}, index) => {
       const parameters = abi.inputs ? abi.inputs as ABIParameter[] : [];
 
       return (
