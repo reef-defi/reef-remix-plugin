@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux";
 import { StateType } from "../../store/reducers";
-import { ABIParameter } from "@remixproject/plugin-api/lib/compiler/type";
+import { ABIParameter, FunctionDescription } from "@remixproject/plugin-api/lib/compiler/type";
 import { contractAttributeDefaultState, ContractAttributeState, ContractHolder } from "../../state";
 import Function from "../Function/Function";
 import { prepareParameters } from "../../utils";
@@ -15,7 +15,7 @@ const ContractBody = ({name, contract} : ContractBodyProps) => {
 
   useEffect(() => {
     const abi = contracts[name]!.payload.abi
-      .filter((statement) => statement.type == "function")
+      .filter((statement) => statement.type === "function")
       .map((desc) => contractAttributeDefaultState(desc));
     setState(abi);
   }, [])
@@ -44,7 +44,9 @@ const ContractBody = ({name, contract} : ContractBodyProps) => {
     const parameters = prepareParameters(value);
     try {
       const result = await contract[name](...parameters);
-      const text = await result.toString();
+      // effect allows filters only functions so we can cast them in FunctionDescription
+      const abi = state[index].abi as FunctionDescription;
+      const text = abi.outputs && abi.outputs.length !== 0 ? await result.toString() : "";
       updateState({...field, text, error: false}, index);
     } catch (e) {
       console.error(e);
