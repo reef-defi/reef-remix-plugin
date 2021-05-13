@@ -14,8 +14,9 @@ const ContractBody = ({name, contract} : ContractBodyProps) => {
   const [state, setState] = useState<ContractAttributeState[]>([]);
 
   useEffect(() => {
+    console.log("Contract abi: ", contracts[name]!.payload.abi);
     const abi = contracts[name]!.payload.abi
-      .filter((statement) => statement.type !== "constructor")
+      .filter((statement) => statement.type == "function")
       .map((desc) => contractAttributeDefaultState(desc));
     setState(abi);
   }, [])
