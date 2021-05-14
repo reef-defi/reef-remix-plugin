@@ -22,7 +22,7 @@ const InlineFunction = ({name, parameters, text, error, submit, onOpen} : Inline
     <div>
       <div className="d-flex flex-row align-items-center">
         <div className="row flex-fill m-0">
-          <div className="col-4 p-0">
+          <div className="col-4 p-0 m-auto">
             <a className="btn btn-outline-light btn-text w-100" onClick={() => submit(value)}>
               { name }
             </a>
@@ -32,7 +32,7 @@ const InlineFunction = ({name, parameters, text, error, submit, onOpen} : Inline
               <input 
                 value={value}
                 placeholder={placeholder.slice(0, placeholder.length-2)}
-                className="form-control"
+                className="form-control text"
                 onChange={(event) => setValue(event.target.value)}
               />
             }

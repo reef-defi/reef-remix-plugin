@@ -23,7 +23,7 @@ const NetworkConfig = ({errorMessage, submit} : NetworkConfigProps) => {
       key={index}
       value={account}
       placeholder="Account mnemonic"
-      className="form-control w-100 mt-1"
+      className="form-control text w-100 mt-1"
       onChange={(event) => changeAccount(event.target.value, index)} />
   ));
 
@@ -32,7 +32,7 @@ const NetworkConfig = ({errorMessage, submit} : NetworkConfigProps) => {
       <form className="mt-4">
         <div className="form-group">
           <label htmlFor="reefRpcUrl">Reef node url</label>
-          <input type="email" className="form-control mt-1" id="reefRpcUrl" value={url} onChange={(event) => setUrl(event.currentTarget.value)} placeholder="ws://127.0.0.1:9944"/>
+          <input type="email" className="form-control text mt-1" id="reefRpcUrl" value={url} onChange={(event) => setUrl(event.currentTarget.value)} placeholder="ws://127.0.0.1:9944"/>
           
         </div>
         <div className="justify-content-between d-flex flex-row align-items-center">
