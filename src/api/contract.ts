@@ -24,8 +24,7 @@ export const submitDeploy = async (contractName: string, params: any[], contract
     dispatch(contractAdd(contractName, newContract));
     dispatch(compiledContractDeployed());
   } catch (e) {
-    console.error(e);
-    dispatch(compiledContractError(e.message ? e.message : e));
+    dispatch(compiledContractError(typeof e === "string" ? e : e.message));
     dispatch(compiledContractDeployed());
   }
 }
