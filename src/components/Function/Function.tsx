@@ -14,23 +14,26 @@ interface FunctionProps {
 
 const Function = ({name, text, error, parameters, submitInline, submitCollapse} : FunctionProps) => {
   const [open, setOpen] = useState(false);
-  return (open ?
-    <CollapsedFunction
-      name={name}
-      text={text}
-      error={error}
-      parameters={parameters}
-      submit={submitCollapse}
-      onClose={() => setOpen(false)}
-    /> :
-    <InlineFunction
-      name={name}
-      text={text}
-      error={error}
-      parameters={parameters}
-      submit={submitInline}
-      onOpen={() => setOpen(true)}
-    />
+  return (
+    <>
+      { open 
+        ? <CollapsedFunction
+          name={name}
+          parameters={parameters}
+          submit={submitCollapse}
+          onClose={() => setOpen(false)}
+        />
+        : <InlineFunction
+          name={name}
+          parameters={parameters}
+          submit={submitInline}
+          onOpen={() => setOpen(true)}
+        />
+      }
+      <div className={"mt-2 text " + (error ? "text-danger" : "text-light")}>
+          {text && text}
+        </div>
+    </>
   );
 }
 
