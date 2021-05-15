@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { ABIParameter } from "@remixproject/plugin-api/lib/compiler/type";
 
 interface CollapsedFunctionProps {
@@ -9,7 +9,11 @@ interface CollapsedFunctionProps {
 }
 
 const CollapsedFunction = ({name, parameters, onClose, submit} : CollapsedFunctionProps) => {
-  const [values, setValues] = useState<string[]>(Array(parameters.length).fill(""));
+  const [values, setValues] = useState<string[]>([]);
+
+  useEffect(() => {
+    setValues(Array(parameters.length).fill(""));
+  }, [parameters]);
 
   const onChange = (value: string, index: number) => setValues([
     ...values.slice(0, index),
@@ -17,14 +21,15 @@ const CollapsedFunction = ({name, parameters, onClose, submit} : CollapsedFuncti
     ...values.slice(index+1, values.length)
   ]);
 
-  const attributesView = values
-    .map((value, index) => (
+  const parameterList = parameters.length !== values.length ? [] : parameters;
+  const attributesView = parameterList
+    .map(({name, type}, index) => (
       <div className="form-group row" key={index}>
-        <label className="col-3 text m-auto">{parameters[index].name}</label>
+        <label className="col-3 text text-right m-auto">{name}</label>
         <div className="col-9">
           <input 
-            value={value}
-            placeholder={parameters[index].type}
+            value={values[index]}
+            placeholder={type}
             className="form-control text"
             onChange={(event) => onChange(event.target.value, index)}
           /> 
