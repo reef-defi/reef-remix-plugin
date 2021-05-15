@@ -67,11 +67,11 @@ const NetworkConfig = ({errorMessage, submit} : NetworkConfigProps) => {
         </div>
       </form>
       <small className="form-text text-danger">{errorMessage}</small>
-      { !isWeb3Injected && 
+      {/* { !isWeb3Injected && 
         <div className="text-danger mt-3">
           *Install polkadot extension in your browser
         </div>
-      }
+      } */}
     </div>
   );
 }
