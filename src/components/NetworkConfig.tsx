@@ -6,8 +6,14 @@ interface NetworkConfigProps {
   submit: (url: string, mnemonics: string[]) => void;
 }
 
+enum ReefNetwork {
+  Localhost="ws://127.0.0.1:9944",
+  Testnet="wss://rpc-testnet.reefscan.com/ws",
+  Mainnet="",
+}
+
 const NetworkConfig = ({errorMessage, submit} : NetworkConfigProps) => {
-  const [url, setUrl] = useState("");
+  const [url, setUrl] = useState(ReefNetwork.Localhost);
   const [accounts, setAccounts] = useState([""]);
 
   const addAccount = () => setAccounts([...accounts, ""]);
@@ -26,14 +32,24 @@ const NetworkConfig = ({errorMessage, submit} : NetworkConfigProps) => {
       className="form-control text w-100 mt-1"
       onChange={(event) => changeAccount(event.target.value, index)} />
   ));
-
+  
+  // TODO when the mainet is published update its select option with correct url!
   return (
     <div className="m-3">
       <form className="mt-4">
         <div className="form-group">
-          <label htmlFor="reefRpcUrl">Reef node url</label>
-          <input type="email" className="form-control text mt-1" id="reefRpcUrl" value={url} onChange={(event) => setUrl(event.currentTarget.value)} placeholder="ws://127.0.0.1:9944"/>
-          
+          <label htmlFor="reefRpcUrl">Reef node url:</label>
+          {/* <input type="email" className="form-control text mt-1" id="reefRpcUrl" value={url} onChange={(event) => setUrl(event.currentTarget.value)} placeholder="ws://127.0.0.1:9944"/> */}
+          <select 
+            id="reefRpcUrl"
+            className="form-select flex-fill mr-1"
+            value={url}
+            onChange={(event) => setUrl(event.target.value as ReefNetwork)}
+          >
+            <option value={ReefNetwork.Localhost}>Localhost ({ReefNetwork.Localhost})</option>
+            <option value={ReefNetwork.Testnet}>Reef Testnet ({ReefNetwork.Testnet})</option>
+            {/* <option value="">Reef Mainnet</option> */}
+          </select>
         </div>
         <div className="justify-content-between d-flex flex-row align-items-center">
           <label>Inject accounts: </label>

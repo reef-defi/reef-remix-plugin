@@ -5,7 +5,7 @@ import { getSigner } from "../../api/contract";
 import { StateType } from "../../store/reducers";
 import { contractAdd } from "../../store/actions/contracts";
 import { ABIParameter } from "@remixproject/plugin-api/lib/compiler/type";
-import InlineFunction from "../Function/InlineFunction";
+import Function from "../Function/Function";
 
 interface ContractRetrieveProps {
   contractName: string;
@@ -13,8 +13,8 @@ interface ContractRetrieveProps {
 }
 
 const contractRetrievialParameters = (): ABIParameter[] => [{
-  name: "Load contract from Address",
-  type: ""
+  name: "",
+  type: "Load contract from Address"
 }];
 
 const ContractRetrieve = ({contractName, signerAddress} : ContractRetrieveProps) => {
@@ -38,13 +38,13 @@ const ContractRetrieve = ({contractName, signerAddress} : ContractRetrieveProps)
   };
 
   return (
-    <InlineFunction
+    <Function
       name="At address"
       parameters={contractRetrievialParameters()}
       text={errorMessage}
       error={true}
-      submit={findContract}
-      onOpen={() => {}}
+      submitInline={findContract}
+      submitCollapse={(addresses: string[]) => findContract(addresses[0])}
     />
   );
 }
