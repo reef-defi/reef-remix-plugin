@@ -9,6 +9,8 @@ body {
 
 .btn-text, .text {
   font-size: 11px !important;
+}
+.btn-text {
   color: whitesmoke !important;
 }
 .btn-text:hover {
