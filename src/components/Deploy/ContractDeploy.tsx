@@ -23,8 +23,6 @@ const ContractDeploy = ({contractName, signerAddress}: ContractDeployProps) => {
   const constructorAbi = getConstructor(contract.abi);
   const parameters = getParameters(constructorAbi);
 
-  const submit = async () => 
-    await submitDeploy(contractName, [], contract, signer.signer, dispatch);
   const submitCollapse = async (values: string[]) => 
     await submitDeploy(contractName, values, contract, signer.signer, dispatch);
   const submitInline = async (value: string) => {
@@ -32,22 +30,16 @@ const ContractDeploy = ({contractName, signerAddress}: ContractDeployProps) => {
     await submitDeploy(contractName, params, contract, signer.signer, dispatch);
   };
 
-  if (!constructorAbi) {
-    return (
-      <div>
-        <a className="btn btn-outline-light btn-text" onClick={submit}>Deploy</a>
-      </div>
-    );
-  } else {
-    return <Function
+  return (
+    <Function
       name="Deploy"
       error={true}
       text={errorMessage}
-      parameters={parameters}
+      parameters={constructorAbi ? parameters : []}
       submitInline={submitInline}
       submitCollapse={submitCollapse}
     />
-  }
+  );
 }
 
 export default ContractDeploy;
