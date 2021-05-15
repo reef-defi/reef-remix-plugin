@@ -22,12 +22,12 @@ const CollapsedFunction = ({name, parameters, text, error, onClose, submit} : Co
   const attributesView = values
     .map((value, index) => (
       <div className="form-group row" key={index}>
-        <label className="col-3 lead m-auto">{parameters[index].name}</label>
+        <label className="col-3 text m-auto">{parameters[index].name}</label>
         <div className="col-9">
           <input 
             value={value}
             placeholder={parameters[index].type}
-            className="form-control"
+            className="form-control text"
             onChange={(event) => onChange(event.target.value, index)}
           /> 
         </div>
@@ -52,7 +52,7 @@ const CollapsedFunction = ({name, parameters, text, error, onClose, submit} : Co
           Transact
         </a>
       </div>
-        <div className={"mt-2 " + (error ? "text-danger" : "text-light")}>
+        <div className={"mt-2 text " + (error ? "text-danger" : "text-light")}>
           {text && text}
         </div>
     </div>
