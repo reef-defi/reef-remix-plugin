@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { StateType } from "../../store/reducers";
-import Loading from "../common/Loading";
+import Loading from "../common/loading/Loading";
 import ContractDeploy from "./ContractDeploy";
 import ContractRetrieve from "./ContractRetrieve";
 

@@ -31,7 +31,7 @@ client.onload(async () => {
   ReactDOM.render(
     <React.StrictMode>
       <Provider store={store}>
-        <App />
+        <App notify={notify} />
       </Provider>
     </React.StrictMode>,
     document.getElementById('root')
@@ -41,6 +41,10 @@ client.onload(async () => {
 
   await initPlugin(client, store.dispatch);
 });
+
+const notify = (message: string) => {
+  // TODO access remix toaster when its availabel <- currently it is not
+}
 
 const initPlugin = async (client: IClient, dispatch: IDispatch) => {
   const result = await client.solidity.getCompilationResult()

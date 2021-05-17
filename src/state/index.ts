@@ -9,7 +9,6 @@ export interface ContractHolder {
 export interface ContractAttributeState {
   text: string;
   error: boolean;
-  loading: boolean;
   abi: ABIDescription;
 }
 
@@ -17,5 +16,4 @@ export const contractAttributeDefaultState = (abi: ABIDescription): ContractAttr
   abi,
   text: "",
   error: false,
-  loading: false,
 });
