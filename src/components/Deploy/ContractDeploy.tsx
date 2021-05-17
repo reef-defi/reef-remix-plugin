@@ -15,8 +15,7 @@ const ContractDeploy = ({contractName, signerAddress}: ContractDeployProps) => {
   const dispatch = useDispatch();
 
   const {signers} = useSelector((state: StateType) => state.signers);
-  const {contracts} = useSelector((state: StateType) => state.compiledContracts);
-  const {errorMessage} = useSelector((state: StateType) => state.compiledContracts);
+  const {contracts, errorMessage} = useSelector((state: StateType) => state.compiledContracts);
 
   const signer = getSigner(signers, signerAddress)
   const contract = contracts[contractName].payload;
