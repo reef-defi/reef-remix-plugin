@@ -17,7 +17,6 @@ const Constructor = ({} : ConstructorProps) => {
 
   const [selectedContract, setSelectedContract] = useState("");
 
-
   useEffect(() => {
     const names = Object.keys(contracts);
     if (names.length > 0) {

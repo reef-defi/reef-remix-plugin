@@ -1,17 +1,19 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { ABIParameter } from "@remixproject/plugin-api/lib/compiler/type";
 
 interface CollapsedFunctionProps {
   name: string;
-  text: string;
-  error: boolean;
   parameters: ABIParameter[];
   onClose: () => void;
   submit: (value: string[]) => Promise<void>;
 }
 
-const CollapsedFunction = ({name, parameters, text, error, onClose, submit} : CollapsedFunctionProps) => {
-  const [values, setValues] = useState<string[]>(Array(parameters.length).fill(""));
+const CollapsedFunction = ({name, parameters, onClose, submit} : CollapsedFunctionProps) => {
+  const [values, setValues] = useState<string[]>([]);
+
+  useEffect(() => {
+    setValues(Array(parameters.length).fill(""));
+  }, [parameters]);
 
   const onChange = (value: string, index: number) => setValues([
     ...values.slice(0, index),
@@ -19,14 +21,15 @@ const CollapsedFunction = ({name, parameters, text, error, onClose, submit} : Co
     ...values.slice(index+1, values.length)
   ]);
 
-  const attributesView = values
-    .map((value, index) => (
+  const parameterList = parameters.length !== values.length ? [] : parameters;
+  const attributesView = parameterList
+    .map(({name, type}, index) => (
       <div className="form-group row" key={index}>
-        <label className="col-3 text m-auto">{parameters[index].name}</label>
+        <label className="col-3 text text-right m-auto">{name}</label>
         <div className="col-9">
           <input 
-            value={value}
-            placeholder={parameters[index].type}
+            value={values[index]}
+            placeholder={type}
             className="form-control text"
             onChange={(event) => onChange(event.target.value, index)}
           /> 
@@ -35,11 +38,11 @@ const CollapsedFunction = ({name, parameters, text, error, onClose, submit} : Co
     ));
 
   return (
-    <div>
+    <>
       <div className="d-flex align-items-center justify-content-between">
         <span className="text-light">{name}</span>
         <svg onClick={onClose} xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" className="bi bi-chevron-up text-light ml-1" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/>
+          <path fillRule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/>
         </svg>
       </div>
 
@@ -52,10 +55,7 @@ const CollapsedFunction = ({name, parameters, text, error, onClose, submit} : Co
           Transact
         </a>
       </div>
-        <div className={"mt-2 text " + (error ? "text-danger" : "text-light")}>
-          {text && text}
-        </div>
-    </div>
+    </>
   )
 }
 

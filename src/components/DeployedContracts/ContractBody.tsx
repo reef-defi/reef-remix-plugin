@@ -35,7 +35,8 @@ const ContractBody = ({name, contract} : ContractBodyProps) => {
       updateState({...field, text: await result.toString(), error: false}, index);
     } catch (e) {
       console.error(e);
-      updateState({...field, text: e.message, error: true}, index);
+      const message = typeof e === "string" ? e : e.message;
+      updateState({...field, text: message, error: true}, index);
     }
   };
   const submitInline = (index: number) => async (value: string) => {
@@ -50,7 +51,8 @@ const ContractBody = ({name, contract} : ContractBodyProps) => {
       updateState({...field, text, error: false}, index);
     } catch (e) {
       console.error(e);
-      updateState({...field, text: e.message, error: true}, index);
+      const message = typeof e === "string" ? e : e.message;
+      updateState({...field, text: message, error: true}, index);
     }
   };
 
