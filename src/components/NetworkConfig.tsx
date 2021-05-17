@@ -42,7 +42,7 @@ const NetworkConfig = ({errorMessage, submit} : NetworkConfigProps) => {
           {/* <input type="email" className="form-control text mt-1" id="reefRpcUrl" value={url} onChange={(event) => setUrl(event.currentTarget.value)} placeholder="ws://127.0.0.1:9944"/> */}
           <select 
             id="reefRpcUrl"
-            className="form-select flex-fill mr-1"
+            className="form-control select_3rUxUe custom-select flex-fill mr-1"
             value={url}
             onChange={(event) => setUrl(event.target.value as ReefNetwork)}
           >
@@ -54,8 +54,8 @@ const NetworkConfig = ({errorMessage, submit} : NetworkConfigProps) => {
         <div className="justify-content-between d-flex flex-row align-items-center">
           <label>Inject accounts: </label>
           <div>
-            <a className="btn btn-outline-light btn-text mr-1" onClick={addAccount}>+</a>
-            <a className="btn btn-outline-light btn-text" onClick={removeAccount}>-</a>
+            <a className="btn btn-outline-light mr-1" onClick={addAccount}>+</a>
+            <a className="btn btn-outline-light" onClick={removeAccount}>-</a>
           </div>
         </div>
 
@@ -63,7 +63,7 @@ const NetworkConfig = ({errorMessage, submit} : NetworkConfigProps) => {
           { accountsView }
         </div>
         <div className="d-flex justify-content-end">
-          <a className="btn btn-outline-light btn-text mt-1" onClick={() => submit(url, accounts)}>Connect</a>
+          <a className="btn btn-outline-light mt-1" onClick={() => submit(url, accounts)}>Connect</a>
         </div>
       </form>
       <small className="form-text text-danger">{errorMessage}</small>

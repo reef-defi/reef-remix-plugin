@@ -7,12 +7,12 @@ body {
   background-color: #292d3f;
 }
 
-.btn-text, .text {
+.btn, .text {
   font-size: 11px !important;
 }
-.btn-text {
+.btn {
   color: whitesmoke !important;
 }
-.btn-text:hover {
+.btn:hover {
   color: grey !important;
 }

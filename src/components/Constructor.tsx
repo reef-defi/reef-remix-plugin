@@ -26,7 +26,7 @@ const Constructor = ({} : ConstructorProps) => {
 
   const signerOptions = signers
     .map(({address}, index) => (
-      <option value={address} key={index}>{address}</option>
+      <option value={address} key={index}>{address.slice(0, 5)}...{address.slice(address.length-5)}</option>
     ));
 
   const contractOptions = Object
@@ -47,7 +47,7 @@ const Constructor = ({} : ConstructorProps) => {
         <div className="d-flex flex-row align-items-center">
           <select
             id="accountSelector"
-            className="form-select flex-fill mr-1"
+            className="form-control select_3rUxUe custom-select flex-fill mr-1"
             value={account}
             onChange={(event) => setAccount(event.target.value)}
           >
@@ -62,7 +62,7 @@ const Constructor = ({} : ConstructorProps) => {
         </label>
 
         <select
-          className="form-select"
+          className="form-control select_3rUxUe custom-select"
           value={selectedContract}
           onChange={(event) => setSelectedContract(event.target.value)}
         >

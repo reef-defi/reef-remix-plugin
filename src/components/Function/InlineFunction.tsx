@@ -18,7 +18,7 @@ const InlineFunction = ({name, parameters, submit, onOpen} : InlineFunctionProps
       <div className="d-flex flex-row align-items-center">
         <div className="row flex-fill m-0">
           <div className="col-4 p-0 m-auto">
-            <a className="btn btn-outline-light btn-text w-100" onClick={() => submit(value)}>
+            <a className="btn btn-outline-light w-100" onClick={() => submit(value)}>
               { name }
             </a>
           </div>
