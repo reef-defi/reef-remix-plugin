@@ -10,7 +10,7 @@ export const deploy = async (contractAbi: CompiledContract, params: any[], signe
   return await ContractFactory
     .fromSolidity(contractAbi)
     .connect(signer as Signer)
-    .deploy(...params);
+    .deploy(...params); // TODO setup the gas & storage limits: {gasLimit: 40, value: 40, storageLimit: 30}
 }
 
 export const retrieveContract = (contractAbi: CompiledContract, address: string, signer: ReefSigner): Contract => {
@@ -24,6 +24,7 @@ export const submitDeploy = async (contractName: string, params: any[], contract
     dispatch(contractAdd(contractName, newContract));
     dispatch(compiledContractDeployed());
   } catch (e) {
+    console.error(e);
     dispatch(compiledContractError(typeof e === "string" ? e : e.message));
     dispatch(compiledContractDeployed());
   }

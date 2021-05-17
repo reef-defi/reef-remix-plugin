@@ -43,10 +43,9 @@ const App = () => {
     const newProvider = new Provider({
       provider: new WsProvider(url),
     });
-
     setIsLoading(true);
     try {
-      await (await newProvider.resolveApi).isReady
+      await (await newProvider.resolveApi).isReady;
       setProvider(newProvider);
       const wallets = await Promise.all(
         connectWallets(newProvider, mnemonics)
