@@ -6,8 +6,16 @@ import { StateType } from "../store/reducers";
 import Deploy from "./Deploy";
 import DeployedContracts from "./DeployedContracts";
 import Copy from "./common/Copy";
+import { formatEther } from "ethers/lib/utils";
+import { BigNumber } from "ethers";
 
 interface ConstructorProps { }
+
+const bigNumberToString = (num: BigNumber): string => {
+  const value = formatEther(num);
+  const point = value.indexOf(".");
+  return value.slice(0, point+3);
+}
 
 const Constructor = ({} : ConstructorProps) => {
   const {contracts} = useSelector((state: StateType) => state.compiledContracts);
@@ -25,8 +33,12 @@ const Constructor = ({} : ConstructorProps) => {
   }, [contracts]);
 
   const signerOptions = signers
-    .map(({address}, index) => (
-      <option value={address} key={index}>{address.slice(0, 5)}...{address.slice(address.length-5)}</option>
+    .map(({address, balance}, index) => (
+      <option value={address} key={index}>
+        {address.slice(0, 6)}
+        ...
+        {address.slice(address.length-5)} - ({bigNumberToString(balance)} Reef)
+      </option>
     ));
 
   const contractOptions = Object
