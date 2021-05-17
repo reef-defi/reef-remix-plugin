@@ -10,6 +10,11 @@ import { RightSmallLoading } from "../common/loading/Loading";
 
 interface ContractBodyProps extends ContractHolder { }
 
+const isLoadingError = (field: ContractAttributeState): ContractAttributeState => ({...field,
+  text: "One function is already running. Please wait a bit!",
+  error: true
+});
+
 const ContractBody = ({name, contract} : ContractBodyProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [state, setState] = useState<ContractAttributeState[]>([]);
@@ -32,7 +37,7 @@ const ContractBody = ({name, contract} : ContractBodyProps) => {
   const submitCollapse = (index: number) => async (values: string[]) => {
     const field = state[index]
     if (isLoading) {
-      updateState({...field, text: "One function is already running. Please wait a bit!", error: true}, index);
+      updateState(isLoadingError(field), index);
       return;
     }
 
@@ -51,7 +56,7 @@ const ContractBody = ({name, contract} : ContractBodyProps) => {
   const submitInline = (index: number) => async (value: string) => {
     const field = state[index];
     if (isLoading) {
-      updateState({...field, text: "One function is already running. Please wait a bit!", error: true}, index);
+      updateState(isLoadingError(field), index);
       return;
     }
 
@@ -61,7 +66,7 @@ const ContractBody = ({name, contract} : ContractBodyProps) => {
       const result = await contract[field.abi.name!](...parameters);
       // effect allows filters only functions so we can cast them in FunctionDescription
       const abi = state[index].abi as FunctionDescription;
-      const text = abi.outputs && abi.outputs.length !== 0 ? await result.toString() : "";
+      const text = abi.outputs && abi.outputs.length !== 0 ? await result.toString() : "Success";
       updateState({...field, text, error: false}, index);
     } catch (e) {
       console.error(e);
