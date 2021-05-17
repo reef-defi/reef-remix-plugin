@@ -16,10 +16,15 @@ const createSeedKeyringPair = (seed: string): KeyringPair => {
   return keyring.addFromUri(seed);
 };
 
-const extractAddress = async (wallet: ReefSigner): Promise<RemixSigner> => ({
-  address: await wallet.getAddress(),
-  signer: wallet
-});
+const extractAddress = (provider: Provider) => async (wallet: ReefSigner): Promise<RemixSigner> => {
+  const address = await wallet.getAddress();
+  const balance = await provider.getBalance(address);
+  return {
+    address,
+    balance,
+    signer: wallet,
+  }
+}
 
 const connectWallets = (provider: Provider, mnemonics: string[]): ReefSigner[] => {
   const signingKeys = new TestAccountSigningKey(provider.api.registry);
@@ -58,7 +63,7 @@ const App = ({ notify }: App) => {
       setProvider(newProvider);
       const wallets = await Promise.all(
         connectWallets(newProvider, mnemonics)
-          .map(extractAddress)
+          .map(extractAddress(newProvider))
       );
       dispatch(signersLoad(wallets));
     } catch (e) {
