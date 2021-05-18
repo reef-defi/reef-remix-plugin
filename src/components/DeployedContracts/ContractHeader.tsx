@@ -1,14 +1,16 @@
-import CopyToClipboard from "react-copy-to-clipboard";
+import React from "react";
 import Copy from "../common/Copy";
+import { RightSmallLoading } from "../common/loading/Loading";
 
 interface ContractHeaderProps {
   open: boolean;
   address: string;
+  isLoading: boolean;
   onClick: () => void;
   onRemove: () => void;
 }
 
-const ContractHeader = ({address, open, onClick, onRemove}: ContractHeaderProps) => {
+const ContractHeader = ({address, open, isLoading, onClick, onRemove}: ContractHeaderProps) => {
   const text = `STORAGE AT ${address.slice(0, 15)}...${address.slice(address.length-3, address.length)}`
   return (
     <div className="d-flex column justify-content-between">
@@ -17,9 +19,10 @@ const ContractHeader = ({address, open, onClick, onRemove}: ContractHeaderProps)
         <label className="text-light ml-1 mr-2">{text}</label>
       </div>
       <div>
+        { isLoading && <RightSmallLoading /> }
         <Copy value={address} />
         <a onClick={onRemove} className="ml-1">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" className="bi bi-x text-light" viewBox="0 0 16 16">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" className="bi bi-x text-color" viewBox="0 0 16 16">
             <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
           </svg>
         </a>

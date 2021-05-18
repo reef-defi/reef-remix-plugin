@@ -8,15 +8,17 @@ import { prepareParameters } from "../../utils";
 import { RightSmallLoading } from "../common/loading/Loading";
 
 
-interface ContractBodyProps extends ContractHolder { }
+interface ContractBodyProps extends ContractHolder {
+  isLoading: boolean;
+  setIsLoading: (value: boolean) => void;
+ }
 
 const isLoadingError = (field: ContractAttributeState): ContractAttributeState => ({...field,
   text: "One function is already running. Please wait a bit!",
   error: true
 });
 
-const ContractBody = ({name, contract} : ContractBodyProps) => {
-  const [isLoading, setIsLoading] = useState(false);
+const ContractBody = ({name, contract, isLoading, setIsLoading} : ContractBodyProps) => {
   const [state, setState] = useState<ContractAttributeState[]>([]);
   const { contracts } = useSelector((state: StateType) => state.compiledContracts);
 
@@ -80,6 +82,7 @@ const ContractBody = ({name, contract} : ContractBodyProps) => {
 
   const attributesView = state
     .map(({text, error, abi}, index) => {
+      console.log(abi);
       const parameters = abi.inputs ? abi.inputs as ABIParameter[] : [];
       
       return (
@@ -88,7 +91,7 @@ const ContractBody = ({name, contract} : ContractBodyProps) => {
             text={text}
             error={error}
             parameters={parameters}
-            isReturn={abi.outputs !== undefined}
+            isReturn={abi.outputs!.length !== 0}
             name={abi.name ? abi.name : ""}
             submitInline={submitInline(index)}
             submitCollapse={submitCollapse(index)}
@@ -100,7 +103,6 @@ const ContractBody = ({name, contract} : ContractBodyProps) => {
   return (
     <>
       {attributesView}
-      { isLoading && <RightSmallLoading /> }
     </>
   );
 }

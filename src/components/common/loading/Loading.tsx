@@ -12,7 +12,7 @@ const Loading = () => (
 export default Loading;
 
 export const RightSmallLoading = () => (
-  <div className="spinner-border text-light" role="status" style={{ width: "15px", height: "15px", fontSize: "10px" }}>
+  <div className="spinner-border text-light mr-1 ml-1" role="status" style={{ width: "15px", height: "15px", fontSize: "10px" }}>
     <span className="sr-only"/>
   </div>
 );

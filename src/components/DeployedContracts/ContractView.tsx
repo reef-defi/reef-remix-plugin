@@ -11,6 +11,7 @@ interface ContractViewProps extends ContractHolder {
 }
 
 const ContractView = (params : ContractViewProps) => {
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
 
@@ -21,11 +22,12 @@ const ContractView = (params : ContractViewProps) => {
     <div className="mt-1">
       <ContractHeader
         open={open}
+        isLoading={isLoading}
         address={params.contract.address}
         onRemove={onRemove}
         onClick={() => setOpen(!open)}
       />
-      { open && <ContractBody {...params} /> }
+      { open && <ContractBody {...params} isLoading={isLoading} setIsLoading={setIsLoading} /> }
     </div>
   );
 }
