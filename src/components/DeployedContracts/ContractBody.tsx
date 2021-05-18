@@ -23,6 +23,7 @@ const ContractBody = ({name, contract} : ContractBodyProps) => {
   useEffect(() => {
     const abi = contracts[name]!.payload.abi
       .filter((statement) => statement.type === "function")
+      .map((statement) => statement as FunctionDescription)
       .map((desc) => contractAttributeDefaultState(desc));
     setState(abi);
   }, [])
@@ -80,13 +81,14 @@ const ContractBody = ({name, contract} : ContractBodyProps) => {
   const attributesView = state
     .map(({text, error, abi}, index) => {
       const parameters = abi.inputs ? abi.inputs as ABIParameter[] : [];
-
+      
       return (
         <div className="mt-1" key={index}>
           <Function
             text={text}
             error={error}
             parameters={parameters}
+            isReturn={abi.outputs !== undefined}
             name={abi.name ? abi.name : ""}
             submitInline={submitInline(index)}
             submitCollapse={submitCollapse(index)}
