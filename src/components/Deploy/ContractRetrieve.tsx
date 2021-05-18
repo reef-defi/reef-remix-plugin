@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Contract, Signer } from "ethers";
 import { useDispatch, useSelector } from "react-redux";
-import { getSigner } from "../../api/contract";
+import { getSigner } from "../../api";
 import { StateType } from "../../store/reducers";
 import { contractAdd } from "../../store/actions/contracts";
 import { ABIParameter } from "@remixproject/plugin-api/lib/compiler/type";
@@ -9,7 +9,6 @@ import Function from "../Function/Function";
 
 interface ContractRetrieveProps {
   contractName: string;
-  signerAddress: string;
 }
 
 const contractRetrievialParameters = (): ABIParameter[] => [{
@@ -17,14 +16,14 @@ const contractRetrievialParameters = (): ABIParameter[] => [{
   type: "Load contract from Address"
 }];
 
-const ContractRetrieve = ({contractName, signerAddress} : ContractRetrieveProps) => {
+const ContractRetrieve = ({contractName} : ContractRetrieveProps) => {
   const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState("");
 
-  const {signers} = useSelector((state: StateType) => state.signers);
+  const {signers, index} = useSelector((state: StateType) => state.signers);
   const {contracts} = useSelector((state: StateType) => state.compiledContracts);
 
-  const signer = getSigner(signers, signerAddress)
+  const signer = signers[index];
   const contractAbi = contracts[contractName].payload.abi;
   
   const findContract = async (address: string) => {
@@ -43,6 +42,7 @@ const ContractRetrieve = ({contractName, signerAddress} : ContractRetrieveProps)
       parameters={contractRetrievialParameters()}
       text={errorMessage}
       error={true}
+      isReturn={false}
       submitInline={findContract}
       submitCollapse={(addresses: string[]) => findContract(addresses[0])}
     />

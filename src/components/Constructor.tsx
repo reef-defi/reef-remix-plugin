@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { isWeb3Injected, web3Accounts, web3Enable } from "@polkadot/extension-dapp";
 
 import { StateType } from "../store/reducers";
@@ -8,6 +8,8 @@ import DeployedContracts from "./DeployedContracts";
 import Copy from "./common/Copy";
 import { formatEther } from "ethers/lib/utils";
 import { BigNumber } from "ethers";
+import { signersSelect } from "../store/actions/signers";
+import { findSigner } from "../utils";
 
 interface ConstructorProps { }
 
@@ -18,12 +20,17 @@ const bigNumberToString = (num: BigNumber): string => {
 }
 
 const Constructor = ({} : ConstructorProps) => {
+  const dispatch = useDispatch();
+  const { signers, index } = useSelector((state: StateType) => state.signers);
   const {contracts} = useSelector((state: StateType) => state.compiledContracts);
 
-  const { signers } = useSelector((state: StateType) => state.signers);
-  const [account, setAccount] = useState(signers.length > 0 ? signers[0].address : "");
-
   const [selectedContract, setSelectedContract] = useState("");
+
+  const account = index === -1 ? "" : signers[index].address;
+  const setAccount = (value: string) => {
+    const signerIndex = findSigner(signers, value);
+    dispatch(signersSelect(signerIndex));
+  };
 
   useEffect(() => {
     const names = Object.keys(contracts);
@@ -82,10 +89,7 @@ const Constructor = ({} : ConstructorProps) => {
         </select>
       </div>
 
-      <Deploy 
-        contractName={selectedContract}
-        signerAddress={account}
-      />
+      <Deploy contractName={selectedContract} />
       
       <DeployedContracts />
     </div>
