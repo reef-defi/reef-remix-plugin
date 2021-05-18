@@ -32,4 +32,4 @@ export const submitDeploy = async (contractName: string, params: any[], contract
 
 export const getSigner = (signers: RemixSigner[], address: string): RemixSigner => {
   return signers.find((wallet) => wallet.address === address)!
-} 
+};

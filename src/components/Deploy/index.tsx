@@ -6,11 +6,10 @@ import ContractDeploy from "./ContractDeploy";
 import ContractRetrieve from "./ContractRetrieve";
 
 interface DeployInputProps {
-  signerAddress: string;
   contractName: string;
 }
 
-const DeployInput = ({signerAddress, contractName} : DeployInputProps) => {  
+const DeployInput = ({contractName} : DeployInputProps) => {  
   const {deploying, contracts} = useSelector((state: StateType) => state.compiledContracts);
   const contractExist = contractName in contracts;
 
@@ -23,14 +22,12 @@ const DeployInput = ({signerAddress, contractName} : DeployInputProps) => {
       { contractExist &&
         <>
           <ContractDeploy 
-            signerAddress={signerAddress}
             contractName={contractName}
             />
           <div className="lead text-color text-center">
             OR
           </div>
           <ContractRetrieve
-            signerAddress={signerAddress}
             contractName={contractName}
           />
         </>

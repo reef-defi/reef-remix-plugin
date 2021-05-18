@@ -7,9 +7,10 @@ import Network from './components/NetworkConfig';
 import { ReefSigner } from '@reef-defi/hardhat-reef/dist/src/proxies/signers/ReefSigner';
 import { KeyringPair } from "@polkadot/keyring/types";
 import { RemixSigner } from './state/signers';
-import { useDispatch } from 'react-redux';
-import { signersLoad } from './store/actions/signers';
-import { NotifyFun, setNotifyAction } from './store/actions/utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { signersLoad, signersSelect } from './store/actions/signers';
+import { NotifyFun, setNotifyAction, setProviderAction } from './store/actions/utils';
+import { StateType } from './store/reducers';
 
 const createSeedKeyringPair = (seed: string): KeyringPair => {
   const keyring = new Keyring({ type: "sr25519" });
@@ -44,33 +45,36 @@ interface App {
 }
 
 const App = ({ notify }: App) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [provider, setProvider] = useState<Provider|undefined>(undefined);
-  const [errorMessage, setErrorMessage] = useState("");
   const dispatch = useDispatch();
+  const {provider} = useSelector((state: StateType) => state.utils);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     dispatch(setNotifyAction(notify));
   }, [])
 
   const submit = async (url: string, mnemonics: string[]) => {
-    const newProvider = new Provider({
-      provider: new WsProvider(url),
-    });
-    setIsLoading(true);
+    const newProvider = new Provider({provider: new WsProvider(url)});
     try {
+      setIsLoading(true);
       await (await newProvider.resolveApi).isReady;
-      setProvider(newProvider);
       const wallets = await Promise.all(
         connectWallets(newProvider, mnemonics)
           .map(extractAddress(newProvider))
       );
+      dispatch(setProviderAction(newProvider));
       dispatch(signersLoad(wallets));
+
+      if (wallets.length > 0) {
+        dispatch(signersSelect(0))
+      }
     } catch (e) {
       setErrorMessage(e.message);
-      setProvider(undefined);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
 

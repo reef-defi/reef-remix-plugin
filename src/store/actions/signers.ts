@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
 import { RemixSigner } from "../../state/signers";
-import { SIGNERS_BALANCE, SIGNERS_LOAD } from "../actionType";
+import { SIGNERS_BALANCE, SIGNERS_LOAD, SIGNERS_SELECT } from "../actionType";
 
 interface SignersLoad {
   type: typeof SIGNERS_LOAD;
@@ -9,12 +9,17 @@ interface SignersLoad {
 
 interface SignersBalance {
   type: typeof SIGNERS_BALANCE;
-  index: number;
   balance: BigNumber;
+}
+
+interface SignersSelect {
+  type: typeof SIGNERS_SELECT;
+  index: number
 }
 
 export type SignersActionType =
   | SignersLoad
+  | SignersSelect
   | SignersBalance;
 
 export const signersLoad = (signers: RemixSigner[]): SignersLoad => ({
@@ -22,8 +27,12 @@ export const signersLoad = (signers: RemixSigner[]): SignersLoad => ({
   signers
 });
 
-export const signersBalance = (index: number, balance: BigNumber): SignersBalance => ({
+export const signersBalance = (balance: BigNumber): SignersBalance => ({
   type: SIGNERS_BALANCE,
   balance,
+});
+
+export const signersSelect = (index: number): SignersSelect => ({
+  type: SIGNERS_SELECT,
   index
 });
