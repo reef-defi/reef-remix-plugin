@@ -1,5 +1,5 @@
 import { Contract } from "ethers";
-import { ABIDescription } from "@remixproject/plugin-api/lib/compiler/type";
+import { FunctionDescription } from "@remixproject/plugin-api/lib/compiler/type";
 
 export interface ContractHolder {
   name: string;
@@ -9,10 +9,10 @@ export interface ContractHolder {
 export interface ContractAttributeState {
   text: string;
   error: boolean;
-  abi: ABIDescription;
+  abi: FunctionDescription;
 }
 
-export const contractAttributeDefaultState = (abi: ABIDescription): ContractAttributeState => ({
+export const contractAttributeDefaultState = (abi: FunctionDescription): ContractAttributeState => ({
   abi,
   text: "",
   error: false,
