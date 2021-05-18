@@ -34,8 +34,8 @@ const Function = ({name, text, error, isReturn, parameters, submitInline, submit
         />
       }
       <div className={"mt-2 text " + (error ? "text-danger" : "text-light")}>
-          {text && text}
-        </div>
+        {text && text}
+      </div>
     </>
   );
 }

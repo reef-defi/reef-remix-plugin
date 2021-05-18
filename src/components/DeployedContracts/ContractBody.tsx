@@ -69,7 +69,7 @@ const ContractBody = ({name, contract, isLoading, setIsLoading} : ContractBodyPr
       const result = await contract[field.abi.name!](...parameters);
       // effect allows filters only functions so we can cast them in FunctionDescription
       const abi = state[index].abi as FunctionDescription;
-      const text = abi.outputs && abi.outputs.length !== 0 ? await result.toString() : "Success";
+      const text = abi.outputs && abi.outputs.length !== 0 ? await result.toString() : "";
       updateState({...field, text, error: false}, index);
     } catch (e) {
       console.error(e);
