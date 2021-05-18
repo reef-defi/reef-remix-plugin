@@ -7,32 +7,35 @@ interface FunctionProps {
   name: string;
   text: string;
   error: boolean;
+  isReturn: boolean;
   parameters: ABIParameter[];
   submitInline: (value: string) => Promise<void>;
   submitCollapse: (values: string[]) => Promise<void>;
 }
 
-const Function = ({name, text, error, parameters, submitInline, submitCollapse} : FunctionProps) => {
+const Function = ({name, text, error, isReturn, parameters, submitInline, submitCollapse} : FunctionProps) => {
   const [open, setOpen] = useState(false);
   return (
     <>
       { open 
         ? <CollapsedFunction
           name={name}
+          isReturn={isReturn}
           parameters={parameters}
           submit={submitCollapse}
           onClose={() => setOpen(false)}
         />
         : <InlineFunction
           name={name}
+          isReturn={isReturn}
           parameters={parameters}
           submit={submitInline}
           onOpen={() => setOpen(true)}
         />
       }
       <div className={"mt-2 text " + (error ? "text-danger" : "text-light")}>
-          {text && text}
-        </div>
+        {text && text}
+      </div>
     </>
   );
 }

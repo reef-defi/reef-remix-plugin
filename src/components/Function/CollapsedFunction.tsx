@@ -3,12 +3,13 @@ import { ABIParameter } from "@remixproject/plugin-api/lib/compiler/type";
 
 interface CollapsedFunctionProps {
   name: string;
+  isReturn: boolean;
   parameters: ABIParameter[];
   onClose: () => void;
   submit: (value: string[]) => Promise<void>;
 }
 
-const CollapsedFunction = ({name, parameters, onClose, submit} : CollapsedFunctionProps) => {
+const CollapsedFunction = ({name, isReturn, parameters, onClose, submit} : CollapsedFunctionProps) => {
   const [values, setValues] = useState<string[]>([]);
 
   useEffect(() => {
@@ -41,7 +42,7 @@ const CollapsedFunction = ({name, parameters, onClose, submit} : CollapsedFuncti
     <>
       <div className="d-flex align-items-center justify-content-between">
         <span className="text-light">{name}</span>
-        <svg onClick={onClose} xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" className="bi bi-chevron-up text-light ml-1" viewBox="0 0 16 16">
+        <svg onClick={onClose} xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" className="bi bi-chevron-up cursor text-color ml-1" viewBox="0 0 16 16">
           <path fillRule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/>
         </svg>
       </div>
@@ -51,7 +52,7 @@ const CollapsedFunction = ({name, parameters, onClose, submit} : CollapsedFuncti
       </div>
       
       <div className="d-flex justify-content-end mt-1">
-        <a className="btn btn-outline-light btn-text" onClick={() => submit(values)}>
+        <a className={"btn " + (isReturn ? "btn-warning" : "btn-info")} onClick={() => submit(values)}>
           Transact
         </a>
       </div>

@@ -8,21 +8,24 @@ import { prepareParameters } from "../../utils";
 import { RightSmallLoading } from "../common/loading/Loading";
 
 
-interface ContractBodyProps extends ContractHolder { }
+interface ContractBodyProps extends ContractHolder {
+  isLoading: boolean;
+  setIsLoading: (value: boolean) => void;
+ }
 
 const isLoadingError = (field: ContractAttributeState): ContractAttributeState => ({...field,
   text: "One function is already running. Please wait a bit!",
   error: true
 });
 
-const ContractBody = ({name, contract} : ContractBodyProps) => {
-  const [isLoading, setIsLoading] = useState(false);
+const ContractBody = ({name, contract, isLoading, setIsLoading} : ContractBodyProps) => {
   const [state, setState] = useState<ContractAttributeState[]>([]);
   const { contracts } = useSelector((state: StateType) => state.compiledContracts);
 
   useEffect(() => {
     const abi = contracts[name]!.payload.abi
       .filter((statement) => statement.type === "function")
+      .map((statement) => statement as FunctionDescription)
       .map((desc) => contractAttributeDefaultState(desc));
     setState(abi);
   }, [])
@@ -66,7 +69,7 @@ const ContractBody = ({name, contract} : ContractBodyProps) => {
       const result = await contract[field.abi.name!](...parameters);
       // effect allows filters only functions so we can cast them in FunctionDescription
       const abi = state[index].abi as FunctionDescription;
-      const text = abi.outputs && abi.outputs.length !== 0 ? await result.toString() : "Success";
+      const text = abi.outputs && abi.outputs.length !== 0 ? await result.toString() : "";
       updateState({...field, text, error: false}, index);
     } catch (e) {
       console.error(e);
@@ -79,14 +82,16 @@ const ContractBody = ({name, contract} : ContractBodyProps) => {
 
   const attributesView = state
     .map(({text, error, abi}, index) => {
+      console.log(abi);
       const parameters = abi.inputs ? abi.inputs as ABIParameter[] : [];
-
+      
       return (
         <div className="mt-1" key={index}>
           <Function
             text={text}
             error={error}
             parameters={parameters}
+            isReturn={abi.outputs!.length !== 0}
             name={abi.name ? abi.name : ""}
             submitInline={submitInline(index)}
             submitCollapse={submitCollapse(index)}
@@ -98,7 +103,6 @@ const ContractBody = ({name, contract} : ContractBodyProps) => {
   return (
     <>
       {attributesView}
-      { isLoading && <RightSmallLoading /> }
     </>
   );
 }

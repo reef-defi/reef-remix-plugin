@@ -26,7 +26,7 @@ const DeployInput = ({signerAddress, contractName} : DeployInputProps) => {
             signerAddress={signerAddress}
             contractName={contractName}
             />
-          <div className="lead text-light text-center">
+          <div className="lead text-color text-center">
             OR
           </div>
           <ContractRetrieve
