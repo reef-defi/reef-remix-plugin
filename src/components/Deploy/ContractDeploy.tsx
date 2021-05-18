@@ -33,6 +33,7 @@ const ContractDeploy = ({contractName, signerAddress}: ContractDeployProps) => {
     <Function
       name="Deploy"
       error={true}
+      isReturn={true}
       text={errorMessage}
       parameters={constructorAbi ? parameters : []}
       submitInline={submitInline}

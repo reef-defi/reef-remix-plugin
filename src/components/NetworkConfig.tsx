@@ -54,8 +54,8 @@ const NetworkConfig = ({errorMessage, submit} : NetworkConfigProps) => {
         <div className="justify-content-between d-flex flex-row align-items-center">
           <label>Inject accounts: </label>
           <div>
-            <a className="btn btn-outline-light mr-1" onClick={addAccount}>+</a>
-            <a className="btn btn-outline-light" onClick={removeAccount}>-</a>
+            <a className="btn btn-info mr-1" onClick={addAccount}>+</a>
+            <a className="btn btn-info" onClick={removeAccount}>-</a>
           </div>
         </div>
 
@@ -63,7 +63,7 @@ const NetworkConfig = ({errorMessage, submit} : NetworkConfigProps) => {
           { accountsView }
         </div>
         <div className="d-flex justify-content-end">
-          <a className="btn btn-outline-light mt-1" onClick={() => submit(url, accounts)}>Connect</a>
+          <a className="btn btn-warning mt-1" onClick={() => submit(url, accounts)}>Connect</a>
         </div>
       </form>
       <small className="form-text text-danger">{errorMessage}</small>

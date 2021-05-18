@@ -4,15 +4,39 @@ html, #root, .app {
 }
 
 body {
-  background-color: #292d3f;
+  background-color: #222436;
 }
 
 .btn, .text {
   font-size: 11px !important;
 }
-.btn {
-  color: whitesmoke !important;
+
+.btn-info {
+  color: #fff !important;
+  background-color: #355f7d;
+  border-color: #355f7d;
 }
-.btn:hover {
-  color: grey !important;
+.btn-warning {
+  color: #fff !important;
+  background-color: #c97539;
+  border-color: #c97539;
+}
+.btn-warning:hover {
+  background-color: #ad632f;
+  border-color: #a35e2c;
+}
+.btn-info:hover {
+  background-color: #2a4b62;
+  border-color: #264459;
+}
+.form-control {
+  box-shadow: 2px;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+.text-color {
+  color: #959bad;
 }
