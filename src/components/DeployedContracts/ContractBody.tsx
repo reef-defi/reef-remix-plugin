@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "../../store/reducers";
 import { ABIParameter, FunctionDescription } from "@remixproject/plugin-api/lib/compiler/type";
-import { contractAttributeDefaultState, ContractAttributeState, ContractHolder } from "../../state";
+import { contractAttributeDefaultState, ContractAttributeState, ContractHolder } from "../../store/localState";
 import Function from "../Function/Function";
 import { prepareParameters } from "../../utils";
 import { signersBalance } from "../../store/actions/signers";

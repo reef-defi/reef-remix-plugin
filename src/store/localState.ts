@@ -1,4 +1,5 @@
-import { Contract } from "ethers";
+import { Contract, BigNumber } from "ethers";
+import { Signer } from "@reef-defi/evm-provider";
 import { FunctionDescription } from "@remixproject/plugin-api/lib/compiler/type";
 
 export interface ContractHolder {
@@ -17,3 +18,16 @@ export const contractAttributeDefaultState = (abi: FunctionDescription): Contrac
   text: "",
   error: false,
 });
+
+
+export interface RemixSigner {
+  balance: BigNumber;
+  address: string;
+  signer: Signer;
+}
+
+export interface ContractAttribute {
+  name: string;
+  type: string;
+  value: string;
+}

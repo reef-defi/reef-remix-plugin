@@ -1,5 +1,5 @@
 import { Contract } from "ethers";
-import { ContractHolder } from "../../state";
+import { ContractHolder } from "../localState";
 import { CONTRACTS_ADD, CONTRACTS_REMOVE_ALL, CONTRACTS_REMOVE } from "../actionType";
 
 

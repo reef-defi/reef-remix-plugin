@@ -5,11 +5,11 @@ import Constructor from './components/Constructor';
 import Loading from './components/common/loading/Loading';
 import Network from './components/NetworkConfig';
 import { KeyringPair } from "@polkadot/keyring/types";
-import { RemixSigner } from './state/signers';
 import { useDispatch, useSelector } from 'react-redux';
 import { signersLoad, signersSelect } from './store/actions/signers';
 import { NotifyFun, setNotifyAction, setProviderAction } from './store/actions/utils';
 import { StateType } from './store/reducers';
+import { RemixSigner } from './store/localState';
 
 const createSeedKeyringPair = (seed: string): KeyringPair => {
   const keyring = new Keyring({ type: "sr25519" });
