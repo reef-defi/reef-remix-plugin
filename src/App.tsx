@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import Constructor from './components/Constructor';
 import Loading from './components/common/loading/Loading';
 import Network from './components/NetworkConfig';
-import { ReefSigner } from '@reef-defi/hardhat-reef/dist/src/proxies/signers/ReefSigner';
 import { KeyringPair } from "@polkadot/keyring/types";
 import { RemixSigner } from './state/signers';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,7 +16,7 @@ const createSeedKeyringPair = (seed: string): KeyringPair => {
   return keyring.addFromUri(seed);
 };
 
-const extractAddress = (provider: Provider) => async (wallet: ReefSigner): Promise<RemixSigner> => {
+const extractAddress = (provider: Provider) => async (wallet: Signer): Promise<RemixSigner> => {
   const address = await wallet.getAddress();
   const balance = await provider.getBalance(address);
   return {
@@ -27,7 +26,7 @@ const extractAddress = (provider: Provider) => async (wallet: ReefSigner): Promi
   }
 }
 
-const connectWallets = (provider: Provider, mnemonics: string[]): ReefSigner[] => {
+const connectWallets = (provider: Provider, mnemonics: string[]): Signer[] => {
   const signingKeys = new TestAccountSigningKey(provider.api.registry);
   const pairs = mnemonics
     .map((mnemonic) => createSeedKeyringPair(mnemonic));
