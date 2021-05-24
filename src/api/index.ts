@@ -2,8 +2,8 @@ import { Dispatch } from "redux";
 import { Contract, ContractFactory, Signer } from "ethers";
 import { CompiledContract } from "@remixproject/plugin-api/lib/compiler/type";
 import { contractAdd } from "../store/actions/contracts";
-import { RemixSigner } from "../state/signers";
 import { compiledContractDeploying, compiledContractDeployed, compiledContractError } from "../store/actions/compiledContracts";
+import { RemixSigner } from "../store/localState";
 
 export const deploy = async (contractAbi: CompiledContract, params: any[], signer: Signer): Promise<Contract> => {
   return await ContractFactory
