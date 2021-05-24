@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-import { isWeb3Injected } from "@polkadot/extension-dapp";
 
 interface NetworkConfigProps {
   errorMessage: string;
@@ -39,7 +38,6 @@ const NetworkConfig = ({errorMessage, submit} : NetworkConfigProps) => {
       <form className="mt-4">
         <div className="form-group">
           <label htmlFor="reefRpcUrl">Reef node url:</label>
-          {/* <input type="email" className="form-control text mt-1" id="reefRpcUrl" value={url} onChange={(event) => setUrl(event.currentTarget.value)} placeholder="ws://127.0.0.1:9944"/> */}
           <select 
             id="reefRpcUrl"
             className="form-control select_3rUxUe custom-select flex-fill mr-1"

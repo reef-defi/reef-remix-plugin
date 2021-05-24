@@ -24,7 +24,7 @@ const DeployInput = ({contractName} : DeployInputProps) => {
           <ContractDeploy 
             contractName={contractName}
             />
-          <div className="lead text-color text-center">
+          <div className="lead text-color text-center mb-2">
             OR
           </div>
           <ContractRetrieve

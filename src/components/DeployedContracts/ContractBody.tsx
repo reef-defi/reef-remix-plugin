@@ -5,7 +5,6 @@ import { ABIParameter, FunctionDescription } from "@remixproject/plugin-api/lib/
 import { contractAttributeDefaultState, ContractAttributeState, ContractHolder } from "../../state";
 import Function from "../Function/Function";
 import { prepareParameters } from "../../utils";
-import { RightSmallLoading } from "../common/loading/Loading";
 import { signersBalance } from "../../store/actions/signers";
 
 
