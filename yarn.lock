@@ -2131,54 +2131,52 @@
     "@types/websocket" "^1.0.2"
     websocket "^1.0.34"
 
-"@reef-defi/api-derive@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@reef-defi/api-derive/-/api-derive-0.1.4.tgz#fa7adbd81c70097a0f66e940ec998f787a47f496"
-  integrity sha512-apGsY0Oso5vEO7gG5YGj34dbiOum84bj1bS7BGKWO+/MKR4h3qnF6YuJLEjLjnaMqyEoHdjzN3YMCX8mV9UKfQ==
+"@reef-defi/api-derive@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@reef-defi/api-derive/-/api-derive-0.1.6.tgz#e56b14dbdca18db6c5602981cf4bb9bf3a64da89"
+  integrity sha512-DiP1yTk1n0wtnc7nTszW6G7mm9wglK5Ttkq1YRJ5AeFgmU3YrqkT3OoF2hhGSYlfoCe9LLpeUdIk1xl+r3QgAg==
   dependencies:
     "@babel/runtime" "^7.10.2"
     "@open-web3/orml-types" "^0.9.1"
     "@polkadot/api-derive" "^4.3.1"
-    "@reef-defi/types" "^0.1.4"
 
-"@reef-defi/api@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@reef-defi/api/-/api-0.1.4.tgz#f6c8262b0af294175021972648f6aea3d6a291d8"
-  integrity sha512-L6bOA4qL1NBZ6/EgXprq/KCeYGv98YAkr557mFUQLcYjTbMEZs09iFwToClI+TtsGoJvp3X5LqLODmDet79SkA==
+"@reef-defi/api@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@reef-defi/api/-/api-0.1.6.tgz#e0e931bf46273de59840ea69f2139e4a00b3b67a"
+  integrity sha512-U+L3huPgVqS6WEsStfCWYg8q/XNb9JthYdQL1MElG14ecMBe+Tj6QpScJNPgkEzpYjvIMZWkZlt9Y7LE0Db3jQ==
   dependencies:
     "@babel/runtime" "^7.10.2"
     "@open-web3/orml-api-derive" "^0.9.1"
     "@polkadot/api" "^4.3.1"
     "@polkadot/rpc-core" "^4.3.1"
-    "@reef-defi/api-derive" "^0.1.4"
-    "@reef-defi/types" "^0.1.4"
 
-"@reef-defi/evm-provider@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@reef-defi/evm-provider/-/evm-provider-0.1.4.tgz#3e4ee32c4df4905f24c763c405cd07754b5309ca"
-  integrity sha512-/Y8NLmrBlsqCRUGdxtg92R80F7C103LtdNAw48Cm2nAql8+YLFwdPgIJh/6vH4pCKkG0M+a+dYMvar+G4a9qOA==
+"@reef-defi/evm-provider@0.1.6-3":
+  version "0.1.6-3"
+  resolved "https://registry.yarnpkg.com/@reef-defi/evm-provider/-/evm-provider-0.1.6-3.tgz#b8bfd4d7b1e656bcdc40fe7dc69d7a87369afff5"
+  integrity sha512-K8Dzfs8bgXGaJeAirXezHA2AHDEWCUMUM+wN1oY5yIxrabf3JN5RZp3R+1tswOKLnH3MeumrO18z7sX04r2LZQ==
   dependencies:
     "@open-web3/dev-config" "^0.1.10"
     "@open-web3/indexer" "^0.9.2-0"
     "@open-web3/scanner" "^0.9.2-0"
-    "@reef-defi/api" "^0.1.4"
-    "@reef-defi/api-derive" "^0.1.4"
-    "@reef-defi/types" "^0.1.4"
+    "@reef-defi/api" "^0.1.6"
+    "@reef-defi/api-derive" "^0.1.6"
+    "@reef-defi/type-definitions" "^0.1.6"
+    "@reef-defi/types" "^0.1.6"
     "@types/chai" "^4.2.14"
     blakejs "^1.1.0"
     ethers "^5.0.21"
 
-"@reef-defi/type-definitions@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@reef-defi/type-definitions/-/type-definitions-0.1.4.tgz#e3ed1198c16135a2745149fe83ab68e96e0adddd"
-  integrity sha512-vzpGDnhnp/Z2dR2v9Z9PVigFdk6KuQE3Lzhmt3/8YeMPB5mbLAH0/VTF0TcPystIO1YeIO25xn0+/CbSxAU/PA==
+"@reef-defi/type-definitions@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@reef-defi/type-definitions/-/type-definitions-0.1.6.tgz#e9fafbeb69223def2df8202e3a78ed776c05537f"
+  integrity sha512-9l6iIaV+avWYHadCl/8ywhtgEG/oQQRmwX7eglFvMxIOpYQSZO6TH7nTcVvf7qbWTmS8JgEZstuI02trUELE9w==
   dependencies:
     "@open-web3/orml-type-definitions" "^0.9.1"
 
-"@reef-defi/types@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@reef-defi/types/-/types-0.1.4.tgz#113b2c0ce62cc2ee6369d971dbdb114a20654409"
-  integrity sha512-n0ZfoTdeksIGfMprIsRUl7juKHY9aOVJLyqmLvL8QtMPGpEVBgqtyJwtQusVnts4yYq9iIYopliSkOYYOXZOIg==
+"@reef-defi/types@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@reef-defi/types/-/types-0.1.6.tgz#ad43cd4be9db0338ea728adeecb038272d4406c4"
+  integrity sha512-U1z2SWSslXEz9ZvXu3yO8g98tLGYXz0aTbCQ0fBBR7/F5kr2EbQNz1oztDSPT8KLrHAD3nj4Aju0dhRGe+GsVQ==
   dependencies:
     "@babel/runtime" "^7.10.2"
     "@open-web3/api-mobx" "^0.9.1"
@@ -2186,7 +2184,6 @@
     "@polkadot/api" "^4.3.1"
     "@polkadot/typegen" "^4.3.1"
     "@polkadot/types" "^4.3.1"
-    "@reef-defi/type-definitions" "^0.1.4"
 
 "@remixproject/plugin-api@0.3.12":
   version "0.3.12"
