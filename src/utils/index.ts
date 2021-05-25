@@ -1,5 +1,5 @@
 import { ABIDescription, ABIParameter } from "@remixproject/plugin-api/lib/compiler/type";
-import { RemixSigner } from "../state/signers";
+import { RemixSigner } from "../store/localState";
 
 export const getConstructor = (abi: ABIDescription[]): ABIDescription | undefined => 
   abi.find((a) => a.type === "constructor");

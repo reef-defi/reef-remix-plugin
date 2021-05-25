@@ -1,4 +1,4 @@
-import { ContractHolder } from "../../state";
+import { ContractHolder } from "../localState";
 import { ContractActionType } from "../actions/contracts";
 import { CONTRACTS_ADD, CONTRACTS_REMOVE_ALL, CONTRACTS_REMOVE } from "../actionType";
 

@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "../../store/reducers";
 import { ABIParameter, FunctionDescription } from "@remixproject/plugin-api/lib/compiler/type";
-import { contractAttributeDefaultState, ContractAttributeState, ContractHolder } from "../../state";
+import { contractAttributeDefaultState, ContractAttributeState, ContractHolder } from "../../store/localState";
 import Function from "../Function/Function";
 import { prepareParameters } from "../../utils";
-import { RightSmallLoading } from "../common/loading/Loading";
 import { signersBalance } from "../../store/actions/signers";
 
 
@@ -18,6 +17,13 @@ const isLoadingError = (field: ContractAttributeState): ContractAttributeState =
   text: "One function is already running. Please wait a bit!",
   error: true
 });
+
+const extractResult = async (result: any, outputs?: ABIParameter[]): Promise<string> => {
+  if (!outputs || outputs.length === 0) { 
+    return Promise.resolve("");
+  }
+  return await result.toString();
+}
 
 const ContractBody = ({name, contract, isLoading, setIsLoading} : ContractBodyProps) => {
   const dispatch = useDispatch();
@@ -53,7 +59,8 @@ const ContractBody = ({name, contract, isLoading, setIsLoading} : ContractBodyPr
     try {
       setIsLoading(true);
       const result = await contract[field.abi.name!](...values);
-      updateState({...field, text: await result.toString(), error: false}, index);
+      const text = await extractResult(result, state[index].abi.outputs);
+      updateState({...field, text, error: false}, index);
     } catch (e) {
       console.error(e);
       const message = typeof e === "string" ? e : e.message;
@@ -73,9 +80,7 @@ const ContractBody = ({name, contract, isLoading, setIsLoading} : ContractBodyPr
       const parameters = prepareParameters(value);
       setIsLoading(true);
       const result = await contract[field.abi.name!](...parameters);
-      // effect allows filters only functions so we can cast them in FunctionDescription
-      const abi = state[index].abi as FunctionDescription;
-      const text = abi.outputs && abi.outputs.length !== 0 ? await result.toString() : "";
+      const text = await extractResult(result, state[index].abi.outputs);
       updateState({...field, text, error: false}, index);
     } catch (e) {
       console.error(e);

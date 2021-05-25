@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { Contract, Signer } from "ethers";
 import { useDispatch, useSelector } from "react-redux";
-import { getSigner } from "../../api";
 import { StateType } from "../../store/reducers";
 import { contractAdd } from "../../store/actions/contracts";
 import { ABIParameter } from "@remixproject/plugin-api/lib/compiler/type";

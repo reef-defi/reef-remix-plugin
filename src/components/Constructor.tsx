@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
-import { isWeb3Injected, web3Accounts, web3Enable } from "@polkadot/extension-dapp";
 
 import { StateType } from "../store/reducers";
 import Deploy from "./Deploy";

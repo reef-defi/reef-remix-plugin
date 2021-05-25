@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
-import { RemixSigner } from "../../state/signers";
 import { SIGNERS_BALANCE, SIGNERS_LOAD, SIGNERS_SELECT } from "../actionType";
+import { RemixSigner } from "../localState";
 
 interface SignersLoad {
   type: typeof SIGNERS_LOAD;

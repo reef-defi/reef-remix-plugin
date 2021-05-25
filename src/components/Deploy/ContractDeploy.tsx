@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getSigner, submitDeploy } from "../../api";
+import { submitDeploy } from "../../api";
 import { signersBalance } from "../../store/actions/signers";
 import { StateType } from "../../store/reducers";
 import { getConstructor, getParameters, prepareParameters } from "../../utils";

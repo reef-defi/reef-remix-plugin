@@ -1,6 +1,6 @@
-import { RemixSigner } from "../../state/signers";
 import { SignersActionType } from "../actions/signers";
 import { SIGNERS_BALANCE, SIGNERS_LOAD, SIGNERS_SELECT } from "../actionType";
+import { RemixSigner } from "../localState";
 
 
 export interface SignersReducer {
