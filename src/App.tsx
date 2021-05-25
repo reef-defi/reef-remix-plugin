@@ -18,6 +18,10 @@ const createSeedKeyringPair = (seed: string): KeyringPair => {
 
 const extractAddress = (provider: Provider) => async (wallet: Signer): Promise<RemixSigner> => {
   const address = await wallet.getAddress();
+  if (!await wallet.isClaimed(address)) {
+    await wallet.claimDefaultAccount();
+  }
+
   const balance = await provider.getBalance(address);
   return {
     address,
@@ -35,9 +39,9 @@ const connectWallets = (provider: Provider, mnemonics: string[]): Signer[] => {
 
   const signers = pairs
     .map((pair) => new Signer(provider, pair.address, signingKeys));
-    
+
   return signers;
-} 
+}
 
 interface App {
   notify: NotifyFun;
