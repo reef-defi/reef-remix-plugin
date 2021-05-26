@@ -1,6 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { submitDeploy } from "../../api";
+import { compiledContractError } from "../../store/actions/compiledContracts";
 import { signersBalance } from "../../store/actions/signers";
 import { StateType } from "../../store/reducers";
 import { getConstructor, getParameters, prepareParameters } from "../../utils";
@@ -24,13 +25,22 @@ const ContractDeploy = ({contractName}: ContractDeployProps) => {
   const parameters = getParameters(constructorAbi);
 
   const submitCollapse = async (values: string[]) => {
-    await submitDeploy(contractName, values, contract, signer.signer, dispatch);
-    dispatch(signersBalance(await provider!.getBalance(signer.address)));
+    try {
+      const params = await prepareParameters(values.join(", "))
+      await submitDeploy(contractName, params, contract, signer.signer, dispatch);
+      dispatch(signersBalance(await provider!.getBalance(signer.address)));
+    } catch (e) {
+      dispatch(compiledContractError(e.message));
+    }
   };
   const submitInline = async (value: string) => {
-    const params = prepareParameters(value);
-    await submitDeploy(contractName, params, contract, signer.signer, dispatch);
-    dispatch(signersBalance(await provider!.getBalance(signer.address)));
+    try {
+      const params = await prepareParameters(value);
+      await submitDeploy(contractName, params, contract, signer.signer, dispatch);
+      dispatch(signersBalance(await provider!.getBalance(signer.address)));
+    } catch (e) {
+      dispatch(compiledContractError(e.message));
+    }
   };
 
   return (

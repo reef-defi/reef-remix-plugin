@@ -10,7 +10,9 @@ import { BigNumber } from "ethers";
 import { signersSelect } from "../store/actions/signers";
 import { findSigner } from "../utils";
 
-interface ConstructorProps { }
+interface ConstructorProps {
+  back(): void;
+}
 
 const bigNumberToString = (num: BigNumber): string => {
   const value = formatEther(num);
@@ -18,7 +20,7 @@ const bigNumberToString = (num: BigNumber): string => {
   return value.slice(0, point+3);
 }
 
-const Constructor = ({} : ConstructorProps) => {
+const Constructor = ({back} : ConstructorProps) => {
   const dispatch = useDispatch();
   const { signers, index } = useSelector((state: StateType) => state.signers);
   const {contracts} = useSelector((state: StateType) => state.compiledContracts);
@@ -57,6 +59,11 @@ const Constructor = ({} : ConstructorProps) => {
 
   return (
     <div className="m-3">
+      <div>
+        <svg onClick={back} xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" className="bi bi-chevron-left text-color cursor" viewBox="0 0 16 16">
+          <path fillRule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+        </svg>
+      </div>
       <div>
         <label>
           Accounts:

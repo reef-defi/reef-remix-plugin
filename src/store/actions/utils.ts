@@ -10,7 +10,7 @@ interface SetNotifyAction {
 
 interface SetProviderAction {
   type: typeof UTILS_SET_PROVIDER;
-  provider: Provider;
+  provider?: Provider;
 }
 
 export type UtilsActionType = 
@@ -22,7 +22,7 @@ export const setNotifyAction = (fun: NotifyFun): SetNotifyAction => ({
   function: fun
 });
 
-export const setProviderAction = (provider: Provider): SetProviderAction => ({
+export const setProviderAction = (provider?: Provider): SetProviderAction => ({
   type: UTILS_SET_PROVIDER,
   provider
 });
