@@ -5,15 +5,7 @@ export const getConstructor = (abi: ABIDescription[]): ABIDescription | undefine
   abi.find((a) => a.type === "constructor");
 
 export const prepareParameters = (parameters: string): any[] => {
-  if (parameters === "") {
-    return [];
-  }
-  const params = ("[" + parameters + "]")
-    .replaceAll("\"", "")
-    .replaceAll("\'", "")
-    .replaceAll(/([A-Za-z0-9]+)/g, "\"$1\"");
-
-  return JSON.parse(params);
+  return JSON.parse("[" + parameters + "]");
 }
 
 export const getParameters = (abi?: ABIDescription): ABIParameter[] => 
