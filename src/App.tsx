@@ -87,12 +87,13 @@ const App = ({ notify }: App) => {
     }
   };
 
+  const back = () => dispatch(setProviderAction());
 
   return (
     <div className="app">
       {isLoading && <Loading />}
       {(!isLoading && !provider) && <Network errorMessage={errorMessage} submit={submit} />}
-      {(!isLoading && provider) && <Constructor />}
+      {(!isLoading && provider) && <Constructor back={back}/>}
     </div>
   );
 }
