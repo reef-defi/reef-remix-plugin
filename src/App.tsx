@@ -10,6 +10,7 @@ import { signersLoad, signersSelect } from './store/actions/signers';
 import { NotifyFun, setNotifyAction, setProviderAction } from './store/actions/utils';
 import { StateType } from './store/reducers';
 import { RemixSigner } from './store/localState';
+import { BigNumber } from 'ethers';
 
 const createSeedKeyringPair = (seed: string): KeyringPair => {
   const keyring = new Keyring({ type: "sr25519" });
@@ -18,11 +19,17 @@ const createSeedKeyringPair = (seed: string): KeyringPair => {
 
 const extractAddress = (provider: Provider) => async (wallet: Signer): Promise<RemixSigner> => {
   const address = await wallet.getAddress();
+  
   if (!await wallet.isClaimed(address)) {
-    await wallet.claimDefaultAccount();
+    try {
+      await wallet.claimDefaultAccount();
+    } catch (e) {
+      throw new Error("Balance of wallet is to low to claim default account!");
+    }
   }
 
   const balance = await provider.getBalance(address);
+
   return {
     address,
     balance,
