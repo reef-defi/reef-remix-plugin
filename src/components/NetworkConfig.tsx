@@ -8,11 +8,11 @@ interface NetworkConfigProps {
 enum ReefNetwork {
   Localhost="ws://127.0.0.1:9944",
   Testnet="wss://rpc-testnet.reefscan.com/ws",
-  Mainnet="",
+  Mainnet="wss://rpc.reefscan.com/ws",
 }
 
 const NetworkConfig = ({errorMessage, submit} : NetworkConfigProps) => {
-  const [url, setUrl] = useState(ReefNetwork.Localhost);
+  const [url, setUrl] = useState(ReefNetwork.Mainnet);
   const [accounts, setAccounts] = useState([""]);
 
   const addAccount = () => setAccounts([...accounts, ""]);
@@ -46,7 +46,7 @@ const NetworkConfig = ({errorMessage, submit} : NetworkConfigProps) => {
           >
             <option value={ReefNetwork.Localhost}>Localhost ({ReefNetwork.Localhost})</option>
             <option value={ReefNetwork.Testnet}>Reef Testnet ({ReefNetwork.Testnet})</option>
-            {/* <option value="">Reef Mainnet</option> */}
+            <option value={ReefNetwork.Mainnet}>Reef Mainnet ({ReefNetwork.Mainnet})</option>
           </select>
         </div>
         <div className="justify-content-between d-flex flex-row align-items-center">
