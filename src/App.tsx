@@ -19,15 +19,6 @@ const createSeedKeyringPair = (seed: string): KeyringPair => {
 
 const extractAddress = (provider: Provider) => async (wallet: Signer): Promise<RemixSigner> => {
   const address = await wallet.getAddress();
-  
-  if (!await wallet.isClaimed(address)) {
-    try {
-      await wallet.claimDefaultAccount();
-    } catch (e) {
-      throw new Error("Balance of wallet is to low to claim default account!");
-    }
-  }
-
   const balance = await provider.getBalance(address);
 
   return {
@@ -66,10 +57,11 @@ const App = ({ notify }: App) => {
   }, [])
 
   const submit = async (url: string, mnemonics: string[]) => {
-    const newProvider = new Provider({provider: new WsProvider(url)});
     try {
       setIsLoading(true);
-      await (await newProvider.resolveApi).isReady;
+      const newProvider = new Provider({provider: new WsProvider(url)});
+      const responseApi = await newProvider.resolveApi;
+      await responseApi.isReady;
       const wallets = await Promise.all(
         connectWallets(newProvider, mnemonics)
           .map(extractAddress(newProvider))
