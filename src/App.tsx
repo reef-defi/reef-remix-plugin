@@ -17,8 +17,15 @@ const createSeedKeyringPair = (seed: string): KeyringPair => {
   return keyring.addFromUri(seed);
 };
 
-const extractAddress = (provider: Provider) => async (wallet: Signer): Promise<RemixSigner> => {
+const extractAddress = (provider: Provider, url: string) => async (wallet: Signer): Promise<RemixSigner> => {
   const address = await wallet.getAddress();
+  const isClaimed = await wallet.isClaimed(address);
+
+  if (url === "ws://127.0.0.1:9944" && !isClaimed) {
+    console.log("Claiming");
+    await wallet.claimDefaultAccount();
+  }
+
   const balance = await provider.getBalance(address);
 
   return {
@@ -64,7 +71,7 @@ const App = ({ notify }: App) => {
       await responseApi.isReady;
       const wallets = await Promise.all(
         connectWallets(newProvider, mnemonics)
-          .map(extractAddress(newProvider))
+          .map(extractAddress(newProvider, url))
       );
       dispatch(setProviderAction(newProvider));
       dispatch(signersLoad(wallets));
