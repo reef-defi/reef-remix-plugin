@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@polkadot/extension-dapp": "^0.37.2",
-    "@reef-defi/evm-provider": "^0.1.8",
+    "@reef-defi/evm-provider": "^0.1.9",
     "@remix-project/remix-simulator": "^0.1.10-beta.0",
     "@remixproject/plugin": "^0.3.12",
     "@remixproject/plugin-iframe": "^0.3.12",
