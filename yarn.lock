@@ -2150,10 +2150,10 @@
     "@polkadot/api" "^4.3.1"
     "@polkadot/rpc-core" "^4.3.1"
 
-"@reef-defi/evm-provider@^0.1.8":
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/@reef-defi/evm-provider/-/evm-provider-0.1.8.tgz#608e07009fadbeabd9519c102c8222d32825c228"
-  integrity sha512-WY3KaSquz7EUn64FSolxIpvFtFEgiFja70uLwhQI500RDfRT/2vsW+1M3FDqAw9CLMGaqCbZpxt6RbkLAqDRog==
+"@reef-defi/evm-provider@^0.1.9":
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/@reef-defi/evm-provider/-/evm-provider-0.1.9.tgz#6e44f7fef70577d9688123cdfdd05f4a47a26c17"
+  integrity sha512-RuyaVimfGUsAwN7gplh9DUJJLEG/LsfaaJylCsdng0587h7zMaWv9bpV2WWGwAokf5tgLcIU+Li9BTyqqb6WAw==
   dependencies:
     "@open-web3/dev-config" "^0.1.10"
     "@open-web3/indexer" "^0.9.2-0"

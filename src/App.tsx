@@ -10,7 +10,6 @@ import { signersLoad, signersSelect } from './store/actions/signers';
 import { NotifyFun, setNotifyAction, setProviderAction } from './store/actions/utils';
 import { StateType } from './store/reducers';
 import { RemixSigner } from './store/localState';
-import { BigNumber } from 'ethers';
 
 const createSeedKeyringPair = (seed: string): KeyringPair => {
   const keyring = new Keyring({ type: "sr25519" });
@@ -22,7 +21,6 @@ const extractAddress = (provider: Provider, url: string) => async (wallet: Signe
   const isClaimed = await wallet.isClaimed(address);
 
   if (url === "ws://127.0.0.1:9944" && !isClaimed) {
-    console.log("Claiming");
     await wallet.claimDefaultAccount();
   }
 
