@@ -1,9 +1,21 @@
 import { COMPILED_CONTRACT_DEPLOYED, COMPILED_CONTRACT_DEPLOYING, COMPILED_CONTRACT_ERROR, COMPILED_CONTRACT_LOAD } from "../actionType";
 
-import { CompilationResult } from "@remixproject/plugin-api/lib/compiler/type";
+import { CompilationResult, CompilationFileSources } from "@remixproject/plugin-api/lib/compiler/type";
 
-interface ContractLoad {
+export interface ContractSourceContent {
+  sources: {
+    [key: string]: {
+      content: string;
+    }
+  }
+}
+
+export interface ContractLoad {
   type: typeof COMPILED_CONTRACT_LOAD;
+  runs: number;
+  optimization: boolean;
+  compilerVersion: string;
+  compilationSources: ContractSourceContent;
   data: CompilationResult | null;
 }
 
@@ -26,8 +38,12 @@ export type CompiledContractType =
   | ContractDeployed
   | ContractDeploying;
 
-export const compiledContractLoad = (data: CompilationResult | null): ContractLoad => ({
+export const compiledContractLoad = (data: CompilationResult | null, optimization: boolean, runs: number, compilerVersion: string, compilationSources: ContractSourceContent): ContractLoad => ({
   data,
+  runs,
+  optimization,
+  compilerVersion,
+  compilationSources,
   type: COMPILED_CONTRACT_LOAD,
 });
 

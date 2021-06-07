@@ -1,4 +1,4 @@
-import { UTILS_SET_NOTIFY, UTILS_SET_PROVIDER } from "../actionType";
+import { UTILS_SET_NOTIFY, UTILS_SET_PROVIDER, UTILS_SET_VERIFICATION_URL } from "../actionType";
 import { Provider } from '@reef-defi/evm-provider';
 
 export type NotifyFun = (message: string) => void;
@@ -13,9 +13,20 @@ interface SetProviderAction {
   provider?: Provider;
 }
 
+interface SetVerificationAction {
+  type: typeof UTILS_SET_VERIFICATION_URL;
+  url?: string;
+}
+
 export type UtilsActionType = 
   | SetNotifyAction
+  | SetVerificationAction
   | SetProviderAction;
+
+export const setVerificationUrl = (url?: string): SetVerificationAction => ({
+  type: UTILS_SET_VERIFICATION_URL,
+  url
+});
 
 export const setNotifyAction = (fun: NotifyFun): SetNotifyAction => ({
   type: UTILS_SET_NOTIFY,

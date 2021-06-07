@@ -5,21 +5,63 @@ import { contractAdd } from "../store/actions/contracts";
 import { compiledContractDeploying, compiledContractDeployed, compiledContractError } from "../store/actions/compiledContracts";
 import { RemixSigner } from "../store/localState";
 
+interface BaseContract {
+  runs: number;
+  source: string;
+  license: string;
+  optimization: boolean;
+  compilerVersion: string;
+}
+
+export interface VerificationContractReq extends BaseContract {
+  address: string;
+}
+
+export interface ReefContract extends BaseContract {
+  filename: string;
+  contractName: string;
+  payload: CompiledContract;
+}
+
+export const fetchPost = async <Body extends {}, >(url: string, body: Body) => 
+  await fetch(url, {
+    method: "POST",
+    headers: {
+      'content-type': 'application/json;charset=UTF-8'
+    },
+    body: JSON.stringify(body)
+  });
+
+export const verifyContract = async (address: string, contract: ReefContract, url?: string) => {
+  if (!url) { return; }
+  await fetchPost<VerificationContractReq>(url, {address, ...contract});
+}
+
 export const deploy = async (contractAbi: CompiledContract, params: any[], signer: Signer): Promise<Contract> => {
   return await ContractFactory
     .fromSolidity(contractAbi)
     .connect(signer as Signer)
-    .deploy(...params); // TODO setup the gas & storage limits: {gasLimit: 40, value: 40, storageLimit: 30}
+    .deploy(...params);
 }
 
 export const retrieveContract = (contractAbi: CompiledContract, address: string, signer: Signer): Contract => {
   return new Contract(address, contractAbi.abi, signer as Signer);
 }
 
-export const submitDeploy = async (contractName: string, params: any[], contract: CompiledContract, signer: Signer, dispatch: Dispatch<any>) => {
-  dispatch(compiledContractDeploying());
+interface DeployParams {
+  params: any[],
+  signer: Signer,
+  contractName: string,
+  verificationUrl?: string;
+  contract: ReefContract,
+  dispatch: Dispatch<any>
+}
+
+export const submitDeploy = async ({params, signer, contractName, verificationUrl, contract, dispatch}: DeployParams) => {
   try {
-    const newContract = await deploy(contract, params, signer);
+    dispatch(compiledContractDeploying());
+    const newContract = await deploy(contract.payload, params, signer);
+    verifyContract(newContract.address, contract, verificationUrl);
     dispatch(contractAdd(contractName, newContract));
     dispatch(compiledContractDeployed());
   } catch (e) {
