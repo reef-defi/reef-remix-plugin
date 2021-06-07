@@ -2,17 +2,40 @@ import React, { useState } from "react"
 
 interface NetworkConfigProps {
   errorMessage: string;
-  submit: (url: string, mnemonics: string[]) => void;
+  submit: (url: string, mnemonics: string[], verificationUrl?: string) => void;
 }
 
-enum ReefNetwork {
-  Localhost="ws://127.0.0.1:9944",
-  Testnet="wss://rpc-testnet.reefscan.com/ws",
-  Mainnet="wss://rpc.reefscan.com/ws",
+enum NetworkName {
+  Localhost="Localhost",
+  Mainnet="Mainnet",
+  Testnet="Testnet",
+}
+
+interface SubNetwork {
+  url: string;
+  verificationUrl?: string;
+}
+
+type Network = {
+  [key in NetworkName]: SubNetwork;
+};
+
+const Network: Network = {
+  Localhost: {
+    url: "ws://127.0.0.1:9944",
+  },
+  Testnet: {
+    url: "wss://rpc-testnet.reefscan.com/ws",
+    verificationUrl: "https://testnet.reefscan.com/api/verificator/untrusted-request"
+  },
+  Mainnet: {
+    url: "wss://rpc.reefscan.com/ws",
+    verificationUrl: "https://reefscan.com/api/verificator/untrusted-request"
+  }
 }
 
 const NetworkConfig = ({errorMessage, submit} : NetworkConfigProps) => {
-  const [url, setUrl] = useState(ReefNetwork.Mainnet);
+  const [network, setNetwork] = useState(NetworkName.Mainnet);
   const [accounts, setAccounts] = useState([""]);
 
   const addAccount = () => setAccounts([...accounts, ""]);
@@ -32,7 +55,6 @@ const NetworkConfig = ({errorMessage, submit} : NetworkConfigProps) => {
       onChange={(event) => changeAccount(event.target.value, index)} />
   ));
   
-  // TODO when the mainet is published update its select option with correct url!
   return (
     <div className="m-3">
       <form className="mt-4">
@@ -41,12 +63,12 @@ const NetworkConfig = ({errorMessage, submit} : NetworkConfigProps) => {
           <select 
             id="reefRpcUrl"
             className="form-control select_3rUxUe custom-select flex-fill mr-1"
-            value={url}
-            onChange={(event) => setUrl(event.target.value as ReefNetwork)}
+            value={network}
+            onChange={(event) => setNetwork(event.target.value as NetworkName)}
           >
-            <option value={ReefNetwork.Localhost}>Localhost ({ReefNetwork.Localhost})</option>
-            <option value={ReefNetwork.Testnet}>Reef Testnet ({ReefNetwork.Testnet})</option>
-            <option value={ReefNetwork.Mainnet}>Reef Mainnet ({ReefNetwork.Mainnet})</option>
+            <option value={NetworkName.Localhost}>Localhost ({Network.Localhost.url})</option>
+            <option value={NetworkName.Testnet}>Reef Testnet ({Network.Testnet.url})</option>
+            <option value={NetworkName.Mainnet}>Reef Mainnet ({Network.Mainnet.url})</option>
           </select>
         </div>
         <div className="justify-content-between d-flex flex-row align-items-center">
@@ -61,7 +83,7 @@ const NetworkConfig = ({errorMessage, submit} : NetworkConfigProps) => {
           { accountsView }
         </div>
         <div className="d-flex justify-content-end">
-          <a className="btn btn-warning mt-1" onClick={() => submit(url, accounts)}>Connect</a>
+          <a className="btn btn-warning mt-1" onClick={() => submit(Network[network].url, accounts, Network[network].verificationUrl)}>Connect</a>
         </div>
       </form>
       <small className="form-text text-danger">{errorMessage}</small>
