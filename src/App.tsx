@@ -7,7 +7,7 @@ import Network from './components/NetworkConfig';
 import { KeyringPair } from "@polkadot/keyring/types";
 import { useDispatch, useSelector } from 'react-redux';
 import { signersLoad, signersSelect } from './store/actions/signers';
-import { NotifyFun, setNotifyAction, setProviderAction } from './store/actions/utils';
+import { NotifyFun, setNotifyAction, setProviderAction, setVerificationUrl } from './store/actions/utils';
 import { StateType } from './store/reducers';
 import { RemixSigner } from './store/localState';
 
@@ -61,7 +61,7 @@ const App = ({ notify }: App) => {
     dispatch(setNotifyAction(notify));
   }, [])
 
-  const submit = async (url: string, mnemonics: string[]) => {
+  const submit = async (url: string, mnemonics: string[], verificationUrl?: string) => {
     try {
       setIsLoading(true);
       const newProvider = new Provider({provider: new WsProvider(url)});
@@ -73,6 +73,7 @@ const App = ({ notify }: App) => {
       );
       dispatch(setProviderAction(newProvider));
       dispatch(signersLoad(wallets));
+      dispatch(setVerificationUrl(verificationUrl));
 
       if (wallets.length > 0) {
         dispatch(signersSelect(0))

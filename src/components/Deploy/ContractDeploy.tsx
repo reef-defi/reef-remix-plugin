@@ -15,7 +15,7 @@ interface ContractDeployProps {
 const ContractDeploy = ({contractName}: ContractDeployProps) => {
   const dispatch = useDispatch();
 
-  const {provider} = useSelector((state: StateType) => state.utils);
+  const {provider, verificationUrl} = useSelector((state: StateType) => state.utils);
   const {contracts, errorMessage} = useSelector((state: StateType) => state.compiledContracts);
   const {signers, index} = useSelector((state: StateType) => state.signers);
 
@@ -25,11 +25,12 @@ const ContractDeploy = ({contractName}: ContractDeployProps) => {
   const parameters = getParameters(constructorAbi);
 
   const partialDeployContent = {
-    contractName,
     contract,
+    dispatch,
+    contractName,
+    verificationUrl,
     signer: signer.signer,
-    dispatch
-  }
+  };
   const submitCollapse = async (values: string[]) => {
     try {
       const params = await prepareParameters(values.join(", "))

@@ -32,8 +32,10 @@ export const fetchPost = async <Body extends {}, >(url: string, body: Body) =>
     body: JSON.stringify(body)
   });
 
-export const verifyContract = (address: string, contract: ReefContract, url?: string) => url ?
-  fetchPost<VerificationContractReq>(url, {address, ...contract}) : {};
+export const verifyContract = async (address: string, contract: ReefContract, url?: string) => {
+  if (!url) { return; }
+  await fetchPost<VerificationContractReq>(url, {address, ...contract});
+}
 
 export const deploy = async (contractAbi: CompiledContract, params: any[], signer: Signer): Promise<Contract> => {
   return await ContractFactory
@@ -56,11 +58,9 @@ interface DeployParams {
 }
 
 export const submitDeploy = async ({params, signer, contractName, verificationUrl, contract, dispatch}: DeployParams) => {
-  const {payload, compilerVersion, license, optimization, runs, source} = contract;
-
-  dispatch(compiledContractDeploying());
   try {
-    const newContract = await deploy(payload, params, signer);
+    dispatch(compiledContractDeploying());
+    const newContract = await deploy(contract.payload, params, signer);
     verifyContract(newContract.address, contract, verificationUrl);
     dispatch(contractAdd(contractName, newContract));
     dispatch(compiledContractDeployed());
