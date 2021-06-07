@@ -1,23 +1,22 @@
-import React, { Dispatch } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
-import { Client, PluginClient } from "@remixproject/plugin";
-import { createClient } from "@remixproject/plugin-iframe";
+import { Provider } from "react-redux";
 
-import { web3Enable, web3Accounts, web3EnablePromise, isWeb3Injected } from "@polkadot/extension-dapp";
-import { IRemixApi } from '@remixproject/plugin-api';
 import App from "./App";
-import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { configureStore } from "./store";
-import { Provider } from "react-redux";
-import { StateType } from "./store/reducers";
-import { compiledContractLoad } from "./store/actions/compiledContracts";
+import { compiledContractLoad, ContractSourceContent } from "./store/actions/compiledContracts";
 
-declare global {
-  interface Window {
-    injectedWeb3: any
-  }
-};
+import { createClient } from "@remixproject/plugin-iframe";
+import { Client, PluginClient } from "@remixproject/plugin";
+import { IRemixApi } from '@remixproject/plugin-api';
+import "./index.css";
+
+// declare global {
+//   interface Window {
+//     injectedWeb3: any
+//   }
+// };
 
 const store = configureStore();
 
@@ -25,6 +24,7 @@ type IClient = Client<any, Readonly<IRemixApi>>;
 type IDispatch = typeof store.dispatch;
 
 const client = createClient(new PluginClient());
+
 
 
 client.onload(async () => {
@@ -43,15 +43,29 @@ client.onload(async () => {
 });
 
 const notify = (message: string) => {
-  // TODO access remix toaster when its availabel <- currently it is not
+  // TODO try out status changes
+  client.emit('statusChange', { key: 'success', type: 'success', title: message });
 }
 
-const initPlugin = async (client: IClient, dispatch: IDispatch) => {
-  const result = await client.solidity.getCompilationResult()
-  dispatch(compiledContractLoad(result.data));
+// TODO Javascript VM is in client.udapp !!!
 
-  client.solidity.on('compilationFinished', async () => {
-    const result = await client.solidity.getCompilationResult()
-    dispatch(compiledContractLoad(result.data));
+const initPlugin = async (client: IClient, dispatch: IDispatch) => {
+  // const result = await client.solidity.getCompilationResult()
+  // dispatch(compiledContractLoad(result.data));
+
+  // TODO maybe try allowing polkadot-extension ??
+  // client.options.allowOrigins = [
+
+  // ]
+
+  client.solidity.on('compilationFinished', async (fileName, source, languageVersion, data) => {
+    const [version, optimization, runs] = languageVersion.split(";");
+    dispatch(compiledContractLoad(
+      data,
+      optimization === "true",
+      parseInt(runs),
+      version,
+      source as unknown as ContractSourceContent
+    ));
   })
 }
