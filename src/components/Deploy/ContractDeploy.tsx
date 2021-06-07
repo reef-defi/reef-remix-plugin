@@ -20,14 +20,20 @@ const ContractDeploy = ({contractName}: ContractDeployProps) => {
   const {signers, index} = useSelector((state: StateType) => state.signers);
 
   const signer = signers[index];
-  const contract = contracts[contractName].payload;
-  const constructorAbi = getConstructor(contract.abi);
+  const contract = contracts[contractName];
+  const constructorAbi = getConstructor(contract.payload.abi);
   const parameters = getParameters(constructorAbi);
 
+  const partialDeployContent = {
+    contractName,
+    contract,
+    signer: signer.signer,
+    dispatch
+  }
   const submitCollapse = async (values: string[]) => {
     try {
       const params = await prepareParameters(values.join(", "))
-      await submitDeploy(contractName, params, contract, signer.signer, dispatch);
+      await submitDeploy({...partialDeployContent, params});
       dispatch(signersBalance(await provider!.getBalance(signer.address)));
     } catch (e) {
       dispatch(compiledContractError(e.message));
@@ -36,7 +42,7 @@ const ContractDeploy = ({contractName}: ContractDeployProps) => {
   const submitInline = async (value: string) => {
     try {
       const params = await prepareParameters(value);
-      await submitDeploy(contractName, params, contract, signer.signer, dispatch);
+      await submitDeploy({...partialDeployContent, params});
       dispatch(signersBalance(await provider!.getBalance(signer.address)));
     } catch (e) {
       dispatch(compiledContractError(e.message));
