@@ -38,7 +38,7 @@ export const verifyContract = async (address: string, contract: ReefContract, ur
 }
 
 export const deploy = async (contractAbi: CompiledContract, params: any[], signer: Signer): Promise<Contract> => {
-  return await ContractFactory
+  return ContractFactory
     .fromSolidity(contractAbi)
     .connect(signer as Signer)
     .deploy(...params);
