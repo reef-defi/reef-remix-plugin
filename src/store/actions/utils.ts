@@ -1,7 +1,8 @@
 import { UTILS_SET_NOTIFY, UTILS_SET_PROVIDER, UTILS_SET_VERIFICATION_URL } from "../actionType";
 import { Provider } from '@reef-defi/evm-provider';
 
-export type NotifyFun = (message: string) => void;
+export type NotificationType = "success" | "error" | "warning";
+export type NotifyFun = (message: string, type?: NotificationType) => void;
 
 interface SetNotifyAction {
   type: typeof UTILS_SET_NOTIFY;

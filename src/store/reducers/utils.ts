@@ -1,15 +1,15 @@
-import { UtilsActionType } from "../actions/utils";
+import { NotificationType, NotifyFun, UtilsActionType } from "../actions/utils";
 import { UTILS_SET_NOTIFY, UTILS_SET_PROVIDER, UTILS_SET_VERIFICATION_URL } from "../actionType";
 import { Provider } from '@reef-defi/evm-provider';
 
 export interface UtilsReducer {
-  notify: (message: string) => void;
+  notify: NotifyFun;
   provider?: Provider;
   verificationUrl?: string;
 }
 
 const initialUtilsState: UtilsReducer = {
-  notify: (message: string) => {},
+  notify: (message: string, type?: NotificationType) => {},
 }
 
 export const utilsReducer = (state=initialUtilsState, action: UtilsActionType): UtilsReducer => {
