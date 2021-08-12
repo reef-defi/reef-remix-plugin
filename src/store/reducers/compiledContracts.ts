@@ -36,7 +36,7 @@ export const compiledContractReducer = (state=initialState, action: CompiledCont
   }
 };
 
-const normalizeCompilationOutput = ({data, optimization, runs, compilerVersion, compilationSources}: ContractLoad): Contracts => {
+const normalizeCompilationOutput = ({data, optimization, runs, compilerVersion, compilationSources, target}: ContractLoad): Contracts => {
   if (data == null) {
     return {};
   }
@@ -47,12 +47,13 @@ const normalizeCompilationOutput = ({data, optimization, runs, compilerVersion, 
     Object.entries(fileContents).forEach(([contractName, contractData]) => {
       contracts[`${contractName} - ${filename}`] = {
         runs,
+        target,
         filename,
         contractName,
         optimization,
         compilerVersion,
-        license: data.sources[filename].ast.license,
         payload: {...contractData},
+        license: data.sources[filename].ast.license,
         source: compilationSources.sources[filename].content
       }
     })
