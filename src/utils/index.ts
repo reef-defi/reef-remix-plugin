@@ -4,9 +4,12 @@ import { RemixSigner } from "../store/localState";
 export const getConstructor = (abi: ABIDescription[]): ABIDescription | undefined => 
   abi.find((a) => a.type === "constructor");
 
-export const prepareParameters = (parameters: string): any[] => {
-  return JSON.parse("[" + parameters + "]");
-}
+export const prepareParameters = (parameters: string): string[] => 
+  parameters === "" 
+    ? [] 
+    : parameters
+      .split(",")
+      .map((param) => param.trim());
 
 export const getParameters = (abi?: ABIDescription): ABIParameter[] => 
   abi ? abi.inputs ? abi.inputs as ABIParameter[] : [] : [];
