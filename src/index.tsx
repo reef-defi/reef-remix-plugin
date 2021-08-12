@@ -57,11 +57,11 @@ const initPlugin = async (client: IClient, dispatch: IDispatch) => {
 
     dispatch(compiledContractLoad(
       data,
-      optimization === "true",
-      parseInt(runs),
+      optimization,
+      runs,
       compilerVersion.slice(0, compilerVersion.length-3),
       source as unknown as ContractSourceContent,
-      evmVersion === "null" ? "istanbul" : evmVersion,
+      evmVersion === "null" ? "default" : evmVersion,
     ));
   });
 }

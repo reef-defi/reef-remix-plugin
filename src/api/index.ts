@@ -11,11 +11,11 @@ import { AxiosResponse } from "axios";
 const CONTRACT_VERIFICATION_URL = "/api/verificator/deployed-bytecode-request";
 
 interface BaseContract {
-  runs: number;
+  runs: string;
   source: string;
   target: string;
   license: string;
-  optimization: boolean;
+  optimization: string;
   compilerVersion: string;
 }
 
@@ -40,9 +40,7 @@ export interface ReefContract extends BaseContract {
 
 export const verifyContract = async (deployedContract: Contract, contract: ReefContract, arg: string[], url?: string): Promise<boolean> => {
   if (!url) { return false; }
-  console.log(deployedContract);
-  console.log(contract);
-  const r: VerificationContractReq = {
+  const body: VerificationContractReq = {
     address: deployedContract.address,
     abi: JSON.stringify(contract.payload.abi),
     arguments: JSON.stringify(arg),
@@ -55,12 +53,9 @@ export const verifyContract = async (deployedContract: Contract, contract: ReefC
     license: contract.license,
     runs: contract.runs
   };
-  console.log(r);
-  return axios.post<VerificationContractReq, AxiosResponse<VerificationRes>>(
-    `${url}${CONTRACT_VERIFICATION_URL}`,
-    r
-  )
-  .then((res) => res.data.status);
+  return await axios.post<VerificationContractReq, AxiosResponse<VerificationRes>>
+    (`${url}${CONTRACT_VERIFICATION_URL}`, body)
+    .then((res) => res.data.status);
 }
 
 export const deploy = async (contractAbi: CompiledContract, params: any[], signer: Signer): Promise<Contract> => {
@@ -87,9 +82,9 @@ interface DeployParams {
 const createDeployedNotification = (name: string, address: string, verificationResult: boolean, url?: string): string => (
   `Contract ${name} deployed successfully on address: ${address}` + (
     url
-    ? `<br>Contract verification is starting now...
-      <br>Check the status of the contract at <a href=${url}/contract/${address} target="_blank">Reefscan URL</a>
-      <br>Contract ${name} was${verificationResult ? "" : " not"} verified!`
+    ? `
+    <br>Check the status of the contract at <a href=${url}/contract/${address} target="_blank">Reefscan URL</a>
+    <br>Contract ${name} was${verificationResult ? "" : " not"} verified!`
     : ""
   )
 )
@@ -102,7 +97,6 @@ export const submitDeploy = async ({params, signer, contractName, reefscanUrl, c
 
     const newContract = await deploy(contract.payload, params, signer);
     const verificationResult = await verifyContract(newContract, contract,  params, reefscanUrl);
-
     notify(createDeployedNotification(
       contract.contractName,
       newContract.address,
