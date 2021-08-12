@@ -13,7 +13,7 @@ enum NetworkName {
 
 interface SubNetwork {
   url: string;
-  verificationUrl?: string;
+  reefscanUrl?: string;
 }
 
 type Network = {
@@ -26,11 +26,11 @@ const Network: Network = {
   },
   Testnet: {
     url: "wss://rpc-testnet.reefscan.com/ws",
-    verificationUrl: "https://testnet.reefscan.com/api/verificator/untrusted-request"
+    reefscanUrl: "https://testnet.reefscan.com",
   },
   Mainnet: {
     url: "wss://rpc.reefscan.com/ws",
-    verificationUrl: "https://reefscan.com/api/verificator/untrusted-request"
+    reefscanUrl: "https://reefscan.com",
   }
 }
 
@@ -83,7 +83,7 @@ const NetworkConfig = ({errorMessage, submit} : NetworkConfigProps) => {
           { accountsView }
         </div>
         <div className="d-flex justify-content-end">
-          <a className="btn btn-warning mt-1" onClick={() => submit(Network[network].url, accounts, Network[network].verificationUrl)}>Connect</a>
+          <a className="btn btn-warning mt-1" onClick={() => submit(Network[network].url, accounts, Network[network].reefscanUrl)}>Connect</a>
         </div>
       </form>
       <small className="form-text text-danger">{errorMessage}</small>
