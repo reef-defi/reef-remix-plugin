@@ -15,7 +15,7 @@ interface ContractDeployProps {
 const ContractDeploy = ({contractName}: ContractDeployProps) => {
   const dispatch = useDispatch();
 
-  const {provider, verificationUrl, notify} = useSelector((state: StateType) => state.utils);
+  const {provider, reefscanUrl, notify} = useSelector((state: StateType) => state.utils);
   const {contracts, errorMessage} = useSelector((state: StateType) => state.compiledContracts);
   const {signers, index} = useSelector((state: StateType) => state.signers);
 
@@ -25,10 +25,11 @@ const ContractDeploy = ({contractName}: ContractDeployProps) => {
   const parameters = getParameters(constructorAbi);
 
   const partialDeployContent = {
+    notify,
     contract,
     dispatch,
+    reefscanUrl,
     contractName,
-    verificationUrl,
     signer: signer.signer,
   };
   const submitCollapse = async (values: string[]) => {
@@ -36,10 +37,8 @@ const ContractDeploy = ({contractName}: ContractDeployProps) => {
       const params = prepareParameters(values.join(", "))
       await submitDeploy({...partialDeployContent, params});
       dispatch(signersBalance(await provider!.getBalance(signer.address)));
-      notify(`Contract ${contractName} has been deployed!`);
     } catch (e) {
       dispatch(compiledContractError(e.message));
-      notify(e.message, "error");
     }
   };
   const submitInline = async (value: string) => {
@@ -47,10 +46,8 @@ const ContractDeploy = ({contractName}: ContractDeployProps) => {
       const params = prepareParameters(value);
       await submitDeploy({...partialDeployContent, params});
       dispatch(signersBalance(await provider!.getBalance(signer.address)));
-      notify(`Contract ${contractName} has been deployed!`);
     } catch (e) {
       dispatch(compiledContractError(e.message));
-      notify(e.message, "error");
     }
   };
 

@@ -4,17 +4,32 @@ import { CompiledContract } from "@remixproject/plugin-api/lib/compiler/type";
 import { contractAdd } from "../store/actions/contracts";
 import { compiledContractDeploying, compiledContractDeployed, compiledContractError } from "../store/actions/compiledContracts";
 import { RemixSigner } from "../store/localState";
+import { NotifyFun } from "../store/actions/utils";
+import axios from "axios";
+import { AxiosResponse } from "axios";
+
+const CONTRACT_VERIFICATION_URL = "/api/verificator/deployed-bytecode-request";
 
 interface BaseContract {
   runs: number;
   source: string;
+  target: string;
   license: string;
   optimization: boolean;
   compilerVersion: string;
 }
 
 export interface VerificationContractReq extends BaseContract {
+  abi: string;
+  name: string;
   address: string;
+  bytecode: string;
+  arguments: string;
+}
+
+interface VerificationRes {
+  status: boolean;
+  message: string;
 }
 
 export interface ReefContract extends BaseContract {
@@ -23,18 +38,29 @@ export interface ReefContract extends BaseContract {
   payload: CompiledContract;
 }
 
-export const fetchPost = async <Body extends {}, >(url: string, body: Body) => 
-  await fetch(url, {
-    method: "POST",
-    headers: {
-      'content-type': 'application/json;charset=UTF-8'
-    },
-    body: JSON.stringify(body)
-  });
-
-export const verifyContract = async (address: string, contract: ReefContract, url?: string) => {
-  if (!url) { return; }
-  await fetchPost<VerificationContractReq>(url, {address, ...contract});
+export const verifyContract = async (deployedContract: Contract, contract: ReefContract, arg: string[], url?: string): Promise<boolean> => {
+  if (!url) { return false; }
+  console.log(deployedContract);
+  console.log(contract);
+  const r: VerificationContractReq = {
+    address: deployedContract.address,
+    abi: JSON.stringify(contract.payload.abi),
+    arguments: JSON.stringify(arg),
+    bytecode: deployedContract.deployTransaction.data,
+    name: contract.contractName,
+    target: contract.target,
+    source: contract.source,
+    optimization: contract.optimization,
+    compilerVersion: contract.compilerVersion,
+    license: contract.license,
+    runs: contract.runs
+  };
+  console.log(r);
+  return axios.post<VerificationContractReq, AxiosResponse<VerificationRes>>(
+    `${url}${CONTRACT_VERIFICATION_URL}`,
+    r
+  )
+  .then((res) => res.data.status);
 }
 
 export const deploy = async (contractAbi: CompiledContract, params: any[], signer: Signer): Promise<Contract> => {
@@ -49,23 +75,45 @@ export const retrieveContract = (contractAbi: CompiledContract, address: string,
 }
 
 interface DeployParams {
-  params: any[],
+  params: string[],
   signer: Signer,
   contractName: string,
-  verificationUrl?: string;
+  reefscanUrl?: string;
   contract: ReefContract,
+  notify: NotifyFun,
   dispatch: Dispatch<any>
 }
 
-export const submitDeploy = async ({params, signer, contractName, verificationUrl, contract, dispatch}: DeployParams) => {
+const createDeployedNotification = (name: string, address: string, verificationResult: boolean, url?: string): string => (
+  `Contract ${name} deployed successfully on address: ${address}` + (
+    url
+    ? `<br>Contract verification is starting now...
+      <br>Check the status of the contract at <a href=${url}/contract/${address} target="_blank">Reefscan URL</a>
+      <br>Contract ${name} was${verificationResult ? "" : " not"} verified!`
+    : ""
+  )
+)
+
+export const submitDeploy = async ({params, signer, contractName, reefscanUrl, contract, dispatch, notify}: DeployParams) => {
   try {
     dispatch(compiledContractDeploying());
+    console.log("Parameters: ", params);
+    notify(`Deploying ${contractName} contract...`);
+
     const newContract = await deploy(contract.payload, params, signer);
-    verifyContract(newContract.address, contract, verificationUrl);
+    const verificationResult = await verifyContract(newContract, contract,  params, reefscanUrl);
+
+    notify(createDeployedNotification(
+      contract.contractName,
+      newContract.address,
+      verificationResult,
+      reefscanUrl
+    ));
     dispatch(contractAdd(contractName, newContract));
     dispatch(compiledContractDeployed());
   } catch (e) {
     console.error(e);
+    notify(`Something went wrong... Error: ${e.message}`, "error");
     dispatch(compiledContractError(typeof e === "string" ? e : e.message));
     dispatch(compiledContractDeployed());
   }
