@@ -31,7 +31,7 @@ const ContractBody = ({name, contract, isLoading, setIsLoading} : ContractBodyPr
   const [state, setState] = useState<ContractAttributeState[]>([]);
 
   const signers = useSelector((state: StateType) => state.signers);
-  const { provider } = useSelector((state: StateType) => state.utils);
+  const { provider, notify } = useSelector((state: StateType) => state.utils);
   const { contracts } = useSelector((state: StateType) => state.compiledContracts);
 
   useEffect(() => {
@@ -60,10 +60,15 @@ const ContractBody = ({name, contract, isLoading, setIsLoading} : ContractBodyPr
       setIsLoading(true);
       const result = await contract[field.abi.name!](...values);
       const text = await extractResult(result, state[index].abi.outputs);
+      notify(`${field.abi.name} call success!`);
+      notify(
+        `${field.abi.name} call with parameters: ${values.join(", ")} complete!
+        <br>Result: ${text}`
+      );
       updateState({...field, text, error: false}, index);
     } catch (e) {
-      console.error(e);
       const message = typeof e === "string" ? e : e.message;
+      notify(`There was an error in ${field.abi.name} call. Error: ${message}`, "error");
       updateState({...field, text: message, error: true}, index);
     } finally {
       setIsLoading(false);
@@ -75,16 +80,20 @@ const ContractBody = ({name, contract, isLoading, setIsLoading} : ContractBodyPr
       updateState(isLoadingError(field), index);
       return;
     }
-
+    
     try {
       const parameters = prepareParameters(value);
       setIsLoading(true);
       const result = await contract[field.abi.name!](...parameters);
       const text = await extractResult(result, state[index].abi.outputs);
+      notify(
+        `${field.abi.name} call with parameters: ${value} complete!
+        <br>Result: ${text}`
+      );
       updateState({...field, text, error: false}, index);
     } catch (e) {
-      console.error(e);
       const message = typeof e === "string" ? e : e.message;
+      notify(`There was an error in ${field.abi.name} call. Error: ${message}`, "error");
       updateState({...field, text: message, error: true}, index);
     } finally {
       setIsLoading(false);
