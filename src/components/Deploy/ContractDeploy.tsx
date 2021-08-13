@@ -15,7 +15,7 @@ interface ContractDeployProps {
 const ContractDeploy = ({contractName}: ContractDeployProps) => {
   const dispatch = useDispatch();
 
-  const {provider, verificationUrl} = useSelector((state: StateType) => state.utils);
+  const {provider, reefscanUrl, notify} = useSelector((state: StateType) => state.utils);
   const {contracts, errorMessage} = useSelector((state: StateType) => state.compiledContracts);
   const {signers, index} = useSelector((state: StateType) => state.signers);
 
@@ -25,15 +25,16 @@ const ContractDeploy = ({contractName}: ContractDeployProps) => {
   const parameters = getParameters(constructorAbi);
 
   const partialDeployContent = {
+    notify,
     contract,
     dispatch,
+    reefscanUrl,
     contractName,
-    verificationUrl,
     signer: signer.signer,
   };
   const submitCollapse = async (values: string[]) => {
     try {
-      const params = await prepareParameters(values.join(", "))
+      const params = prepareParameters(values.join(", "))
       await submitDeploy({...partialDeployContent, params});
       dispatch(signersBalance(await provider!.getBalance(signer.address)));
     } catch (e) {
@@ -42,7 +43,7 @@ const ContractDeploy = ({contractName}: ContractDeployProps) => {
   };
   const submitInline = async (value: string) => {
     try {
-      const params = await prepareParameters(value);
+      const params = prepareParameters(value);
       await submitDeploy({...partialDeployContent, params});
       dispatch(signersBalance(await provider!.getBalance(signer.address)));
     } catch (e) {

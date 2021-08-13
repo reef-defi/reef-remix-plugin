@@ -25,13 +25,19 @@ const extractResult = async (result: any, outputs?: ABIParameter[]): Promise<str
   return await result.toString();
 }
 
+const createNotification = (name: string, params: string, result: string) => 
+  `${name} call ` + 
+  (params ? `with parameters: ${params} ` : "") + "complete!" +
+  (result ? `
+    <br>Result: ${result}` : "");
+
 const ContractBody = ({name, contract, isLoading, setIsLoading} : ContractBodyProps) => {
   const dispatch = useDispatch();
 
   const [state, setState] = useState<ContractAttributeState[]>([]);
 
   const signers = useSelector((state: StateType) => state.signers);
-  const { provider } = useSelector((state: StateType) => state.utils);
+  const { provider, notify } = useSelector((state: StateType) => state.utils);
   const { contracts } = useSelector((state: StateType) => state.compiledContracts);
 
   useEffect(() => {
@@ -60,10 +66,11 @@ const ContractBody = ({name, contract, isLoading, setIsLoading} : ContractBodyPr
       setIsLoading(true);
       const result = await contract[field.abi.name!](...values);
       const text = await extractResult(result, state[index].abi.outputs);
+      notify(createNotification(field.abi.name!, values.join(", "), text));
       updateState({...field, text, error: false}, index);
     } catch (e) {
-      console.error(e);
       const message = typeof e === "string" ? e : e.message;
+      notify(`There was an error in ${field.abi.name} call. Error: ${message}`, "error");
       updateState({...field, text: message, error: true}, index);
     } finally {
       setIsLoading(false);
@@ -75,16 +82,17 @@ const ContractBody = ({name, contract, isLoading, setIsLoading} : ContractBodyPr
       updateState(isLoadingError(field), index);
       return;
     }
-
+    
     try {
       const parameters = prepareParameters(value);
       setIsLoading(true);
       const result = await contract[field.abi.name!](...parameters);
       const text = await extractResult(result, state[index].abi.outputs);
+      notify(createNotification(field.abi.name!, value, text));
       updateState({...field, text, error: false}, index);
     } catch (e) {
-      console.error(e);
       const message = typeof e === "string" ? e : e.message;
+      notify(`There was an error in ${field.abi.name} call. Error: ${message}`, "error");
       updateState({...field, text: message, error: true}, index);
     } finally {
       setIsLoading(false);
@@ -97,7 +105,7 @@ const ContractBody = ({name, contract, isLoading, setIsLoading} : ContractBodyPr
   const attributesView = state
     .map(({text, error, abi}, index) => {
       const parameters = abi.inputs ? abi.inputs as ABIParameter[] : [];
-      
+      const name = (abi.name ? abi.name : "").slice(0, 12);
       return (
         <div className="mt-1" key={index}>
           <Function
@@ -105,7 +113,7 @@ const ContractBody = ({name, contract, isLoading, setIsLoading} : ContractBodyPr
             error={error}
             parameters={parameters}
             isReturn={abi.outputs!.length !== 0}
-            name={abi.name ? abi.name : ""}
+            name={name}
             submitInline={submitInline(index)}
             submitCollapse={submitCollapse(index)}
           />
