@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Constructor from './components/Constructor';
 import Loading from './components/common/loading/Loading';
 import { useDispatch, useSelector } from 'react-redux';
-import { signersAdd } from './store/actions/signers';
+import { signersAdd, signersClear } from './store/actions/signers';
 import { NotifyFun, setNotifyAction, setProviderAction } from './store/actions/utils';
 import { StateType } from './store/reducers';
 import { RemixSigner } from './store/localState';
@@ -12,15 +12,17 @@ import { getNetworkSpec, NetworkName } from './utils/network';
 import { contractRemoveAll } from './store/actions/contracts';
 
 const extractAddress = async (provider: Provider, url: string, wallet: Signer): Promise<RemixSigner> => {
+  const isClaimed = await wallet.isClaimed();
   const address = await wallet.getAddress();
-  const isClaimed = await wallet.isClaimed(address);
-
-  if (url === "ws://127.0.0.1:9944" && !isClaimed) {
-    await wallet.claimDefaultAccount();
+  
+  if (!isClaimed) {
+    if (url !== "ws://127.0.0.1:9944" || !address) {
+      throw new Error("Wallet is not claimed yet! Bind your wallet to get evm address. This can be done on https://reefswap.com/bind")
+    } else {
+      await wallet.claimDefaultAccount();
+    }
   }
-
   const balance = await provider.getBalance(address);
-
   return {
     address,
     balance,
@@ -47,7 +49,7 @@ const App = ({ notify }: App) => {
   const [error, setError] = useState("");
   const [mnemonic, setMnemonic] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [network, setNetwork] = useState(getNetworkSpec(NetworkName.Localhost));
+  const [network, setNetwork] = useState(getNetworkSpec(NetworkName.Mainnet));
 
   useEffect(() => {
     dispatch(setNotifyAction(notify));
@@ -55,13 +57,21 @@ const App = ({ notify }: App) => {
 
   useEffect(() => {
     const load = async () => {
-      setIsLoading(true);
-      const newProvider = new Provider({provider: new WsProvider(network.url)});
-      const api = await newProvider.resolveApi;
-      await api.isReady;
-      dispatch(contractRemoveAll());
-      dispatch(setProviderAction(newProvider));
-      setIsLoading(false);
+      try {
+        setError("");
+        setIsLoading(true);
+        dispatch(signersClear());
+        dispatch(contractRemoveAll());
+        const newProvider = new Provider({provider: new WsProvider(network.url)});
+        const api = await newProvider.resolveApi;
+        await api.isReady;
+        dispatch(setProviderAction(newProvider));
+      } catch (e) {
+        setError(e.message);
+        notify(`There was an error when adding signer: ${e.message}`);
+      } finally {
+        setIsLoading(false);
+      }
     };
     load();
   }, [network])
@@ -75,9 +85,10 @@ const App = ({ notify }: App) => {
       const reefSigner = await extractAddress(provider, network.url, signer);
       notify(`Signer with addess: ${reefSigner.address}`);
       dispatch(signersAdd(reefSigner));
+      setMnemonic("");
     } catch (e) {
-      notify(`There was an error when adding signer: ${e.message}`);
       setError(e.message);
+      notify(`There was an error when adding signer: ${e.message}`);
     } finally {
       setIsLoading(false);
     }
@@ -126,7 +137,7 @@ const App = ({ notify }: App) => {
       </div>
       {isLoading && <Loading />}
       {(!isLoading) && <Constructor />}
-      {error && <span className="text text-danger">{error}</span>}
+      {error && <span className="text text-danger m-3">{error}</span>}
     </div>
   );
 }

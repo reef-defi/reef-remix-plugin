@@ -92,7 +92,6 @@ const createDeployedNotification = (name: string, address: string, verificationR
 export const submitDeploy = async ({params, signer, contractName, reefscanUrl, contract, dispatch, notify}: DeployParams) => {
   try {
     dispatch(compiledContractDeploying());
-    console.log("Parameters: ", params);
     notify(`Deploying ${contractName} contract...`);
 
     const newContract = await deploy(contract.payload, params, signer);
