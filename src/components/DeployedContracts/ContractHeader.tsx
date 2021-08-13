@@ -11,7 +11,7 @@ interface ContractHeaderProps {
 }
 
 const ContractHeader = ({address, open, isLoading, onClick, onRemove}: ContractHeaderProps) => {
-  const text = `STORAGE AT ${address.slice(0, 15)}...${address.slice(address.length-3, address.length)}`
+  const text = `STORAGE AT ${address.slice(0, isLoading ? 13 : 15)}...${address.slice(address.length-3, address.length)}`
   return (
     <div className="d-flex column justify-content-between">
       <div>

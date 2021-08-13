@@ -40,3 +40,19 @@ body {
 .text-color {
   color: #959bad;
 }
+
+.action-underline:hover {
+  text-decoration: underline;
+}
+
+.network-dropdown {
+  width: 150px;
+  transform: translate3d(-55px, 27px, 0px) !important;
+  background-color: #292d3f;
+}
+
+.plugin-dropdown-account {
+  width: 300px;
+  transform: translate3d(-275px, 27px, 0px) !important;
+  background-color: #292d3f;
+}

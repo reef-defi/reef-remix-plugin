@@ -25,6 +25,12 @@ const extractResult = async (result: any, outputs?: ABIParameter[]): Promise<str
   return await result.toString();
 }
 
+const createNotification = (name: string, params: string, result: string) => 
+  `${name} call ` + 
+  (params ? `with parameters: ${params} ` : "") + "complete!" +
+  (result ? `
+    <br>Result: ${result}` : "");
+
 const ContractBody = ({name, contract, isLoading, setIsLoading} : ContractBodyProps) => {
   const dispatch = useDispatch();
 
@@ -60,11 +66,7 @@ const ContractBody = ({name, contract, isLoading, setIsLoading} : ContractBodyPr
       setIsLoading(true);
       const result = await contract[field.abi.name!](...values);
       const text = await extractResult(result, state[index].abi.outputs);
-      notify(`${field.abi.name} call success!`);
-      notify(
-        `${field.abi.name} call with parameters: ${values.join(", ")} complete!
-        <br>Result: ${text}`
-      );
+      notify(createNotification(field.abi.name!, values.join(", "), text));
       updateState({...field, text, error: false}, index);
     } catch (e) {
       const message = typeof e === "string" ? e : e.message;
@@ -86,10 +88,7 @@ const ContractBody = ({name, contract, isLoading, setIsLoading} : ContractBodyPr
       setIsLoading(true);
       const result = await contract[field.abi.name!](...parameters);
       const text = await extractResult(result, state[index].abi.outputs);
-      notify(
-        `${field.abi.name} call with parameters: ${value} complete!
-        <br>Result: ${text}`
-      );
+      notify(createNotification(field.abi.name!, value, text));
       updateState({...field, text, error: false}, index);
     } catch (e) {
       const message = typeof e === "string" ? e : e.message;
@@ -106,7 +105,7 @@ const ContractBody = ({name, contract, isLoading, setIsLoading} : ContractBodyPr
   const attributesView = state
     .map(({text, error, abi}, index) => {
       const parameters = abi.inputs ? abi.inputs as ABIParameter[] : [];
-      
+      const name = (abi.name ? abi.name : "").slice(0, 12);
       return (
         <div className="mt-1" key={index}>
           <Function
@@ -114,7 +113,7 @@ const ContractBody = ({name, contract, isLoading, setIsLoading} : ContractBodyPr
             error={error}
             parameters={parameters}
             isReturn={abi.outputs!.length !== 0}
-            name={abi.name ? abi.name : ""}
+            name={name}
             submitInline={submitInline(index)}
             submitCollapse={submitCollapse(index)}
           />
