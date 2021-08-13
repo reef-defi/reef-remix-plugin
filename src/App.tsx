@@ -3,20 +3,15 @@ import { Provider, Signer, TestAccountSigningKey } from '@reef-defi/evm-provider
 import React, { useEffect, useState } from 'react';
 import Constructor from './components/Constructor';
 import Loading from './components/common/loading/Loading';
-import Network from './components/NetworkConfig';
-import { KeyringPair } from "@polkadot/keyring/types";
 import { useDispatch, useSelector } from 'react-redux';
-import { signersLoad, signersSelect } from './store/actions/signers';
-import { NotifyFun, setNotifyAction, setProviderAction, setReefscanUrl } from './store/actions/utils';
+import { signersAdd } from './store/actions/signers';
+import { NotifyFun, setNotifyAction, setProviderAction } from './store/actions/utils';
 import { StateType } from './store/reducers';
 import { RemixSigner } from './store/localState';
+import { getNetworkSpec, NetworkName } from './utils/network';
+import { contractRemoveAll } from './store/actions/contracts';
 
-const createSeedKeyringPair = (seed: string): KeyringPair => {
-  const keyring = new Keyring({ type: "sr25519" });
-  return keyring.addFromUri(seed);
-};
-
-const extractAddress = (provider: Provider, url: string) => async (wallet: Signer): Promise<RemixSigner> => {
+const extractAddress = async (provider: Provider, url: string, wallet: Signer): Promise<RemixSigner> => {
   const address = await wallet.getAddress();
   const isClaimed = await wallet.isClaimed(address);
 
@@ -33,17 +28,12 @@ const extractAddress = (provider: Provider, url: string) => async (wallet: Signe
   }
 }
 
-const connectWallets = (provider: Provider, mnemonics: string[]): Signer[] => {
+const connectWallet = (provider: Provider, mnemonic: string): Signer => {
   const signingKeys = new TestAccountSigningKey(provider.api.registry);
-  const pairs = mnemonics
-    .map((mnemonic) => createSeedKeyringPair(mnemonic));
-
-  signingKeys.addKeyringPair(pairs);
-
-  const signers = pairs
-    .map((pair) => new Signer(provider, pair.address, signingKeys));
-
-  return signers;
+  const keyring = new Keyring({ type: "sr25519" });
+  const pair = keyring.addFromUri(mnemonic);
+  signingKeys.addKeyringPair(pair);
+  return new Signer(provider, pair.address, signingKeys);
 }
 
 interface App {
@@ -54,44 +44,89 @@ const App = ({ notify }: App) => {
   const dispatch = useDispatch();
   const {provider} = useSelector((state: StateType) => state.utils);
 
+  const [error, setError] = useState("");
+  const [mnemonic, setMnemonic] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [network, setNetwork] = useState(getNetworkSpec(NetworkName.Localhost));
 
   useEffect(() => {
     dispatch(setNotifyAction(notify));
   }, [])
 
-  const submit = async (url: string, mnemonics: string[], verificationUrl?: string) => {
-    try {
+  useEffect(() => {
+    const load = async () => {
       setIsLoading(true);
-      const newProvider = new Provider({provider: new WsProvider(url)});
-      const responseApi = await newProvider.resolveApi;
-      await responseApi.isReady;
-      const wallets = await Promise.all(
-        connectWallets(newProvider, mnemonics)
-          .map(extractAddress(newProvider, url))
-      );
+      const newProvider = new Provider({provider: new WsProvider(network.url)});
+      const api = await newProvider.resolveApi;
+      await api.isReady;
+      dispatch(contractRemoveAll());
       dispatch(setProviderAction(newProvider));
-      dispatch(signersLoad(wallets));
-      dispatch(setReefscanUrl(verificationUrl));
+      setIsLoading(false);
+    };
+    load();
+  }, [network])
 
-      if (wallets.length > 0) {
-        dispatch(signersSelect(0))
-      }
+  const addSigner = async () => {
+    if (!provider) { return; }
+    try {
+      setError("");
+      setIsLoading(true);
+      const signer = connectWallet(provider, mnemonic);
+      const reefSigner = await extractAddress(provider, network.url, signer);
+      notify(`Signer with addess: ${reefSigner.address}`);
+      dispatch(signersAdd(reefSigner));
     } catch (e) {
-      setErrorMessage(e.message);
+      notify(`There was an error when adding signer: ${e.message}`);
+      setError(e.message);
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const back = () => dispatch(setProviderAction());
+  }
 
   return (
     <div className="app">
+      <div className="d-flex justify-content-between px-3">
+        <svg width="18" height="18" />
+
+        <div className="dropdown">
+          <span className="text-light cursor action-underline" id="dropdownNetwork" data-bs-toggle="dropdown" aria-expanded="false">
+            {network.name}
+          </span>
+          <ul className="dropdown-menu dropdown-menu-end network-dropdown" aria-labelledby="dropdownNetwork">
+            <li><a className="dropdown-item text-light text-center" href="#" onClick={() => setNetwork(getNetworkSpec(NetworkName.Mainnet))}>Mainnet</a></li>
+            <li><a className="dropdown-item text-light text-center" href="#" onClick={() => setNetwork(getNetworkSpec(NetworkName.Testnet))}>Testnet</a></li>
+            <li><a className="dropdown-item text-light text-center" href="#" onClick={() => setNetwork(getNetworkSpec(NetworkName.Localhost))}>Localhost</a></li>
+          </ul>
+        </div>
+
+        <div className="dropdown">
+          <svg width="18" height="18" fill="currentColor" className="bi bi-gear text-color cursor" viewBox="0 0 16 16"  role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+            <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
+            <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/>
+          </svg>
+
+
+          <div className="dropdown-menu dropdown-menu-end plugin-dropdown-account">
+            <div className="px-4 py-3">
+              <div className="mb-3">
+                <label htmlFor="accountMnemonic" className="form-label">Add account:</label>
+                <input 
+                  type="email"
+                  className="form-control"
+                  id="accountMnemonic"
+                  placeholder="Insert mnemonic seed"
+                  value={mnemonic}
+                  onChange={(event) => setMnemonic(event.target.value)}
+                />
+              </div>
+              <button type="submit" className="btn btn-primary" onClick={addSigner}>Sign</button>
+            </div>
+          </div>
+        </div>
+      </div>
       {isLoading && <Loading />}
-      {(!isLoading && !provider) && <Network errorMessage={errorMessage} submit={submit} />}
-      {(!isLoading && provider) && <Constructor back={back}/>}
+      {(!isLoading) && <Constructor />}
+      {error && <span className="text text-danger">{error}</span>}
     </div>
   );
 }
