@@ -1,5 +1,5 @@
 import { SignersActionType } from "../actions/signers";
-import { SIGNERS_BALANCE, SIGNERS_LOAD, SIGNERS_SELECT } from "../actionType";
+import { SIGNERS_BALANCE, SIGNERS_ADD, SIGNERS_SELECT } from "../actionType";
 import { RemixSigner } from "../localState";
 
 
@@ -15,8 +15,8 @@ const initialState: SignersReducer = {
 
 export const signersReducer = (state=initialState, action: SignersActionType): SignersReducer => {
   switch (action.type) {
-    case SIGNERS_LOAD:
-      return {...state, signers: action.signers};
+    case SIGNERS_ADD:
+      return {...state, signers: [...state.signers, action.signer], index: state.signers.length};
     case SIGNERS_SELECT:
       return {...state, index: action.index};
     case SIGNERS_BALANCE:

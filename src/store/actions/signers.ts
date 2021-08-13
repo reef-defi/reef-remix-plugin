@@ -1,10 +1,10 @@
 import { BigNumber } from "ethers";
-import { SIGNERS_BALANCE, SIGNERS_LOAD, SIGNERS_SELECT } from "../actionType";
+import { SIGNERS_BALANCE, SIGNERS_ADD, SIGNERS_SELECT } from "../actionType";
 import { RemixSigner } from "../localState";
 
-interface SignersLoad {
-  type: typeof SIGNERS_LOAD;
-  signers: RemixSigner[];
+interface SignersAdd {
+  type: typeof SIGNERS_ADD;
+  signer: RemixSigner;
 }
 
 interface SignersBalance {
@@ -18,13 +18,13 @@ interface SignersSelect {
 }
 
 export type SignersActionType =
-  | SignersLoad
+  | SignersAdd
   | SignersSelect
   | SignersBalance;
 
-export const signersLoad = (signers: RemixSigner[]): SignersLoad => ({
-  type: SIGNERS_LOAD,
-  signers
+export const signersAdd = (signer: RemixSigner): SignersAdd => ({
+  type: SIGNERS_ADD,
+  signer
 });
 
 export const signersBalance = (balance: BigNumber): SignersBalance => ({
