@@ -80,7 +80,7 @@ interface DeployParams {
 }
 
 const createDeployedNotification = (name: string, address: string, verificationResult: boolean, url?: string): string => (
-  `Contract ${name} deployed successfully on address: ${address}` + (
+  `Contract ${name} deployed successfully at address: ${address}` + (
     url
     ? `
     <br>Check the status of the contract at <a href=${url}/contract/${address} target="_blank">Reefscan URL</a>
