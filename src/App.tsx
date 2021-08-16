@@ -71,7 +71,7 @@ const App = ({ notify }: App) => {
         setStatus("success");
       } catch (e) {
         await newProvider.api.disconnect();
-        const message = `There was an error when connecting to provider: ${e.message}`
+        const message = `There was an error when connecting to newtork ${network.name}... Check network status!`
         setError(message);
         notify(message, "error");
         setStatus("failed");
@@ -143,7 +143,7 @@ const App = ({ notify }: App) => {
       </div>
       {status === "loading" && <Loading />}
       {status === "success" && <Constructor />}
-      {status === "failed" && <span className="text text-danger m-3">{error}</span>}
+      {status === "failed" && <div className="text text-danger m-3">{error}</div>}
     </div>
   );
 }
