@@ -10,6 +10,7 @@ import { StateType } from './store/reducers';
 import { RemixSigner } from './store/localState';
 import { getNetworkSpec, NetworkName } from './utils/network';
 import { contractRemoveAll } from './store/actions/contracts';
+import Dot from './components/common/Dot';
 
 const extractAddress = async (provider: Provider, url: string, wallet: Signer): Promise<RemixSigner> => {
   const isClaimed = await wallet.isClaimed();
@@ -42,13 +43,15 @@ interface App {
   notify: NotifyFun;
 }
 
+type Status = "loading" | "success" | "failed";
+
 const App = ({ notify }: App) => {
   const dispatch = useDispatch();
   const {provider} = useSelector((state: StateType) => state.utils);
 
   const [error, setError] = useState("");
+  const [status, setStatus] = useState<Status>("success");
   const [mnemonic, setMnemonic] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [network, setNetwork] = useState(getNetworkSpec(NetworkName.Mainnet));
 
   useEffect(() => {
@@ -57,20 +60,21 @@ const App = ({ notify }: App) => {
 
   useEffect(() => {
     const load = async () => {
+      const newProvider = new Provider({provider: new WsProvider(network.url)});
       try {
         setError("");
-        setIsLoading(true);
+        setStatus("loading");
         dispatch(signersClear());
         dispatch(contractRemoveAll());
-        const newProvider = new Provider({provider: new WsProvider(network.url)});
-        const api = await newProvider.resolveApi;
-        await api.isReady;
+        await newProvider.api.isReadyOrError;
         dispatch(setProviderAction(newProvider));
+        setStatus("success");
       } catch (e) {
-        setError(e.message);
-        notify(`There was an error when adding signer: ${e.message}`);
-      } finally {
-        setIsLoading(false);
+        await newProvider.api.disconnect();
+        const message = `There was an error when connecting to newtork ${network.name}... Check network status!`
+        setError(message);
+        notify(message, "error");
+        setStatus("failed");
       }
     };
     load();
@@ -80,17 +84,18 @@ const App = ({ notify }: App) => {
     if (!provider) { return; }
     try {
       setError("");
-      setIsLoading(true);
+      setStatus("loading")
       const signer = connectWallet(provider, mnemonic);
       const reefSigner = await extractAddress(provider, network.url, signer);
       notify(`Signer with addess: ${reefSigner.address}`);
       dispatch(signersAdd(reefSigner));
       setMnemonic("");
     } catch (e) {
-      setError(e.message);
-      notify(`There was an error when adding signer: ${e.message}`);
+      const message = `There was an error when adding signer: ${e.message}`;
+      setError(message);
+      notify(message, "error");
     } finally {
-      setIsLoading(false);
+      setStatus("success")
     }
   }
 
@@ -102,6 +107,7 @@ const App = ({ notify }: App) => {
         <div className="dropdown">
           <span className="text-light cursor action-underline" id="dropdownNetwork" data-bs-toggle="dropdown" aria-expanded="false">
             {network.name}
+            <Dot color={status === "loading" ? "warning" : (status === "failed" ? "danger" : "success")}/>
           </span>
           <ul className="dropdown-menu dropdown-menu-end network-dropdown" aria-labelledby="dropdownNetwork">
             <li><a className="dropdown-item text-light text-center" href="#" onClick={() => setNetwork(getNetworkSpec(NetworkName.Mainnet))}>Mainnet</a></li>
@@ -135,9 +141,9 @@ const App = ({ notify }: App) => {
           </div>
         </div>
       </div>
-      {isLoading && <Loading />}
-      {(!isLoading) && <Constructor />}
-      {error && <span className="text text-danger m-3">{error}</span>}
+      {status === "loading" && <Loading />}
+      {status === "success" && <Constructor />}
+      {status === "failed" && <div className="text text-danger m-3">{error}</div>}
     </div>
   );
 }
