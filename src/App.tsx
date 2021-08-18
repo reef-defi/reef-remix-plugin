@@ -5,7 +5,7 @@ import Constructor from './components/Constructor';
 import Loading from './components/common/loading/Loading';
 import { useDispatch, useSelector } from 'react-redux';
 import { signersAdd, signersClear } from './store/actions/signers';
-import { NotifyFun, setNotifyAction, setProviderAction } from './store/actions/utils';
+import { NotifyFun, setNotifyAction, setProviderAction, setReefscanUrl } from './store/actions/utils';
 import { StateType } from './store/reducers';
 import { RemixSigner } from './store/localState';
 import { getNetworkSpec, NetworkName } from './utils/network';
@@ -67,6 +67,7 @@ const App = ({ notify }: App) => {
         dispatch(signersClear());
         dispatch(contractRemoveAll());
         await newProvider.api.isReadyOrError;
+        dispatch(setReefscanUrl(network.reefscanUrl));
         dispatch(setProviderAction(newProvider));
         setStatus("success");
       } catch (e) {
