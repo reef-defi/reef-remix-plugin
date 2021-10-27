@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { submitDeploy } from "../../api";
+import { ReefContract, submitDeploy } from "../../api";
 import { compiledContractError } from "../../store/actions/compiledContracts";
 import { signersBalance } from "../../store/actions/signers";
 import { StateType } from "../../store/reducers";
@@ -12,6 +12,16 @@ interface ContractDeployProps {
   contractName: string;
 }
 
+interface Contracts {
+  [name: string]: ReefContract;
+}
+
+const combineSources = (contracts: Contracts): string => {
+  const sources = Object.keys(contracts)
+    .reduce((prev, key) => ({...prev, [contracts[key].filename]: contracts[key].source}), {})
+  return JSON.stringify(sources);
+};
+  
 const ContractDeploy = ({contractName}: ContractDeployProps) => {
   const dispatch = useDispatch();
 
@@ -24,21 +34,24 @@ const ContractDeploy = ({contractName}: ContractDeployProps) => {
   const constructorAbi = getConstructor(contract.payload.abi);
   const parameters = getParameters(constructorAbi);
 
+  const source = combineSources(contracts);
+  
   const partialDeployContent = {
-    notify,
-    contract,
-    dispatch,
     reefscanUrl,
     contractName,
     signer: signer.signer,
+    contract: {...contract, source},
+    notify,
+    dispatch,
   };
+
   const submitCollapse = async (values: string[]) => {
     try {
       const params = prepareParameters(values.join(", "))
       await submitDeploy({...partialDeployContent, params});
       dispatch(signersBalance(await provider!.getBalance(signer.address)));
     } catch (e) {
-      dispatch(compiledContractError(e.message));
+      dispatch(compiledContractError(e.message ? e.message : e));
     }
   };
   const submitInline = async (value: string) => {
@@ -47,7 +60,7 @@ const ContractDeploy = ({contractName}: ContractDeployProps) => {
       await submitDeploy({...partialDeployContent, params});
       dispatch(signersBalance(await provider!.getBalance(signer.address)));
     } catch (e) {
-      dispatch(compiledContractError(e.message));
+      dispatch(compiledContractError(e.message ? e.message : e));
     }
   };
 
