@@ -16,46 +16,9 @@ interface Contracts {
   [name: string]: ReefContract;
 }
 
-// Contract reefscan verification
-// interface Cont {
-//   [key: string]: {content: string};
-// }
-
-// const contracts2Cont = (contracts: Contracts): Cont => 
-//   Object.keys(contracts)
-//   .reduce((prev, key) => ({...prev,
-//     [key]: {content: contracts[key].source}
-//   }), {} as Cont)
-
-// const contracts2String = (contracts: Cont): string => 
-//   Object.keys(contracts)
-//     .reduce((prev, key) => 
-//       `${prev}\n// Contract file name: ${key}\n${contracts[key].content}`,
-//       ""
-//     );
-
-// const string2Contracts = (contractString: string): Cont => {
-//   const scripts = contractString.split(/\/\/ Contract file name: /g).slice(1)
-//   let contracts: Cont = {};
-//   scripts.forEach((script) => {
-//     const fullContent = script.split("\n");
-//     const key = fullContent[0];
-//     const content = fullContent.slice(1).join("\n");
-//     contracts[key] = {content: content};
-//   });
-//   return contracts;
-// }
-// const dropContractNames = (contracts: Cont): Cont => 
-//   Object.keys(contracts)
-//   .reduce((prev, key) => ({...prev,
-//     [key.split(" - ")[1]]: {...contracts[key]}
-//   }), {} as Cont)
-
-
 const combineSources = (contracts: Contracts): string => {
   const sources = Object.keys(contracts)
-    .reduce((prev, key) => ({...prev, [contracts[key].filename]: {content: contracts[key].source }}), {})
-  
+    .reduce((prev, key) => ({...prev, [contracts[key].filename]: contracts[key].source}), {})
   return JSON.stringify(sources);
 };
   
@@ -74,12 +37,12 @@ const ContractDeploy = ({contractName}: ContractDeployProps) => {
   const source = combineSources(contracts);
   
   const partialDeployContent = {
-    notify,
-    contract: {...contract, source},
-    dispatch,
     reefscanUrl,
     contractName,
     signer: signer.signer,
+    contract: {...contract, source},
+    notify,
+    dispatch,
   };
 
   const submitCollapse = async (values: string[]) => {
@@ -88,7 +51,7 @@ const ContractDeploy = ({contractName}: ContractDeployProps) => {
       await submitDeploy({...partialDeployContent, params});
       dispatch(signersBalance(await provider!.getBalance(signer.address)));
     } catch (e) {
-      dispatch(compiledContractError(e.message));
+      dispatch(compiledContractError(e.message ? e.message : e));
     }
   };
   const submitInline = async (value: string) => {
@@ -97,7 +60,7 @@ const ContractDeploy = ({contractName}: ContractDeployProps) => {
       await submitDeploy({...partialDeployContent, params});
       dispatch(signersBalance(await provider!.getBalance(signer.address)));
     } catch (e) {
-      dispatch(compiledContractError(e.message));
+      dispatch(compiledContractError(e.message ? e.message : e));
     }
   };
 

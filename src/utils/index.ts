@@ -22,3 +22,11 @@ export const findSigner = (signers: RemixSigner[], address: string): number => {
   }
   throw new Error("Signer not found")!
 }
+
+export const delay = async (milliseconds: number): Promise<void> => {
+  return new Promise((resolve, _) => {
+    setTimeout(() => {
+      resolve()
+    }, milliseconds);
+  })
+}
