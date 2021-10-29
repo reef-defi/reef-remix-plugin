@@ -1,5 +1,6 @@
 import { Dispatch } from "redux";
-import { Contract, ContractFactory, Signer } from "ethers";
+import { Signer } from "@reef-defi/evm-provider";
+import { Contract, ContractFactory, Signer as EthersSigner } from "ethers";
 import { CompiledContract } from "@remixproject/plugin-api/lib/compiler/type";
 import { contractAdd } from "../store/actions/contracts";
 import { compiledContractDeploying, compiledContractDeployed, compiledContractError } from "../store/actions/compiledContracts";
@@ -27,10 +28,6 @@ export interface VerificationContractReq extends BaseContract {
   arguments: string;
 }
 
-interface VerificationRes {
-  status: boolean;
-  message: string;
-}
 
 export interface ReefContract extends BaseContract {
   filename: string;
@@ -59,9 +56,9 @@ export const verifyContract = async (deployedContract: Contract, contract: ReefC
       license: contract.license,
       runs: contract.runs
     };
-    return await contractVerificatorApi.post<VerificationContractReq, AxiosResponse<VerificationRes>>
+    return await contractVerificatorApi.post<VerificationContractReq, AxiosResponse<string>>
       (`${url}${CONTRACT_VERIFICATION_URL}`, body)
-      .then((res) => res.data.status)
+      .then((res) => res.data === "VERIFIED")
   } catch (err) {
     return false
   }
@@ -70,12 +67,12 @@ export const verifyContract = async (deployedContract: Contract, contract: ReefC
 export const deploy = async (contractAbi: CompiledContract, params: any[], signer: Signer): Promise<Contract> => {
   return ContractFactory
     .fromSolidity(contractAbi)
-    .connect(signer as Signer)
+    .connect(signer as EthersSigner)
     .deploy(...params);
 }
 
 export const retrieveContract = (contractAbi: CompiledContract, address: string, signer: Signer): Contract => {
-  return new Contract(address, contractAbi.abi, signer as Signer);
+  return new Contract(address, contractAbi.abi, signer as EthersSigner);
 }
 
 interface DeployParams {
@@ -107,11 +104,12 @@ export const submitDeploy = async ({params, signer, contractName, reefscanUrl, c
       reefscanUrl
     ));
     delay(1000);
+    console.log(newContract.deployTransaction.data);
     const verificationResult = await verifyContract(newContract, contract,  params, reefscanUrl);
     notify(verificationNofitication(contract.contractName, verificationResult));
     dispatch(contractAdd(contractName, newContract));
     dispatch(compiledContractDeployed());
-  } catch (e) {
+  } catch (e: any) {
     console.error(e);
     notify(`Something went wrong... Error: ${e.message}`, "error");
     dispatch(compiledContractError(typeof e === "string" ? e : e.message));
