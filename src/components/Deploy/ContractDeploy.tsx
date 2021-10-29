@@ -50,7 +50,7 @@ const ContractDeploy = ({contractName}: ContractDeployProps) => {
       const params = prepareParameters(values.join(", "))
       await submitDeploy({...partialDeployContent, params});
       dispatch(signersBalance(await provider!.getBalance(signer.address)));
-    } catch (e) {
+    } catch (e: any) {
       dispatch(compiledContractError(e.message ? e.message : e));
     }
   };
@@ -59,7 +59,7 @@ const ContractDeploy = ({contractName}: ContractDeployProps) => {
       const params = prepareParameters(value);
       await submitDeploy({...partialDeployContent, params});
       dispatch(signersBalance(await provider!.getBalance(signer.address)));
-    } catch (e) {
+    } catch (e: any) {
       dispatch(compiledContractError(e.message ? e.message : e));
     }
   };

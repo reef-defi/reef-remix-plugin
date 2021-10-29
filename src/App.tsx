@@ -17,11 +17,7 @@ const extractAddress = async (provider: Provider, url: string, wallet: Signer): 
   const address = await wallet.getAddress();
   
   if (!isClaimed) {
-    if (url !== "ws://127.0.0.1:9944" || !address) {
-      throw new Error("Wallet is not claimed yet! Bind your wallet to get evm address. This can be done on https://reefswap.com/bind")
-    } else {
-      await wallet.claimDefaultAccount();
-    }
+    await wallet.claimDefaultAccount();
   }
   const balance = await provider.getBalance(address);
   return {
@@ -91,7 +87,7 @@ const App = ({ notify }: App) => {
       notify(`Signer with addess: ${reefSigner.address}`);
       dispatch(signersAdd(reefSigner));
       setMnemonic("");
-    } catch (e) {
+    } catch (e: any) {
       const message = `There was an error when adding signer: ${e.message}`;
       setError(message);
       notify(message, "error");

@@ -54,14 +54,14 @@ const initPlugin = async (client: IClient, dispatch: IDispatch) => {
   client.solidity.on('compilationFinished', async (_, source, languageVersion, data) => {
     const [evmVersion, version, optimization, runs] = languageVersion.split(";");
     const [, compilerVersion] = version.split("-");
-
+    
     dispatch(compiledContractLoad(
       data,
       optimization,
       runs,
       compilerVersion.slice(0, compilerVersion.length-3),
       source as unknown as ContractSourceContent,
-      evmVersion === "null" ? "default" : evmVersion,
+      evmVersion === "null" ? "london" : evmVersion,
     ));
   });
 }
