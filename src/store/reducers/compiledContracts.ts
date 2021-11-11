@@ -46,7 +46,7 @@ const normalizeCompilationOutput = ({data, optimization, runs, compilerVersion, 
   Object.entries(data.contracts).forEach(([filename, fileContents]) => {
     Object.entries(fileContents).forEach(([contractName, contractData]) => {
       contracts[`${contractName} - ${filename}`] = {
-        runs,
+        runs: parseInt(runs, 10),
         target,
         filename,
         contractName,
