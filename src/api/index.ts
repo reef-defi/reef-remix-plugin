@@ -10,14 +10,15 @@ import axios from "axios";
 import { AxiosResponse } from "axios";
 import { delay } from "../utils";
 
-const CONTRACT_VERIFICATION_URL = "/api/verificator/automatic-contract-verification";
+const CONTRACT_VERIFICATION_URL = "/api/verificator/submit-verification";
+// const verification_test = "http://localhost:3000/api/verificator/submit-verification";
 
 interface BaseContract {
-  runs: string;
+  runs: number;
   source: string;
   target: string;
   license: string;
-  optimization: string;
+  optimization: boolean;
   compilerVersion: string;
 }
 
@@ -44,6 +45,7 @@ const contractVerificatorApi = axios.create({
 export const verifyContract = async (deployedContract: Contract, contract: ReefContract, arg: string[], url?: string): Promise<boolean> => {
   if (!url) { return false; }
   try {
+    await delay(5000);
     const body: VerificationContractReq = {
       address: deployedContract.address,
       arguments: JSON.stringify(arg),
@@ -56,10 +58,12 @@ export const verifyContract = async (deployedContract: Contract, contract: ReefC
       license: contract.license,
       runs: contract.runs
     };
-    return await contractVerificatorApi.post<VerificationContractReq, AxiosResponse<string>>
+    await contractVerificatorApi.post<VerificationContractReq, AxiosResponse<string>>
       (`${url}${CONTRACT_VERIFICATION_URL}`, body)
-      .then((res) => res.data === "VERIFIED")
+      // (verification_test, body)
+    return true;
   } catch (err) {
+    console.error(err);
     return false
   }
 }
@@ -69,10 +73,6 @@ export const deploy = async (contractAbi: CompiledContract, params: any[], signe
     .fromSolidity(contractAbi)
     .connect(signer as EthersSigner)
     .deploy(...params);
-}
-
-export const retrieveContract = (contractAbi: CompiledContract, address: string, signer: Signer): Contract => {
-  return new Contract(address, contractAbi.abi, signer as EthersSigner);
 }
 
 interface DeployParams {
@@ -96,15 +96,14 @@ export const submitDeploy = async ({params, signer, contractName, reefscanUrl, c
   try {
     dispatch(compiledContractDeploying());
     notify(`Deploying ${contractName} contract...`);
-
-    const newContract = await deploy(contract.payload, params, signer);
+    const deployParams = params.map((param) => (param === "true" || param === "false" ? param === "true" : param));
+    const newContract = await deploy(contract.payload, deployParams, signer);
     notify(deployedNotification(
       contract.contractName,
       newContract.address,
       reefscanUrl
     ));
-    delay(1000);
-    console.log(newContract.deployTransaction.data);
+
     const verificationResult = await verifyContract(newContract, contract,  params, reefscanUrl);
     notify(verificationNofitication(contract.contractName, verificationResult));
     dispatch(contractAdd(contractName, newContract));
