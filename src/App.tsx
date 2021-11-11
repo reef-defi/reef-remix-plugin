@@ -55,8 +55,8 @@ const App = ({ notify }: App) => {
   }, [])
 
   useEffect(() => {
+    const newProvider = new Provider({provider: new WsProvider(network.url)});
     const load = async () => {
-      const newProvider = new Provider({provider: new WsProvider(network.url)});
       try {
         setError("");
         setStatus("loading");
@@ -75,6 +75,10 @@ const App = ({ notify }: App) => {
       }
     };
     load();
+    
+    return () => {
+      newProvider.api.disconnect();
+    }
   }, [network])
 
   const addSigner = async () => {
