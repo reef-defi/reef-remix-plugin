@@ -2142,7 +2142,7 @@
     "@reef-defi/api-derive" "^1.0.1"
     "@reef-defi/types" "^1.0.1"
 
-"@reef-defi/evm-provider@^1.0.2":
+"@reef-defi/evm-provider@^1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@reef-defi/evm-provider/-/evm-provider-1.0.3.tgz#835164417948bbcf1c1b8bf3d936d05433d56981"
   integrity sha512-EvLDkAhJYEjTZImQjwe75/5fyYse52LBezcfw7Aj4iyqOyYh2O3n+87ih+icOqOaBOPOdtHjLrKm04vJShj/rQ==
