@@ -37,9 +37,9 @@ export interface ReefContract extends BaseContract {
 }
 
 const contractVerificatorApi = axios.create({
-  headers: {
-    "Access-Control-Allow-Origin": "*"
-  }
+  // headers: {
+  //   "Access-Control-Allow-Origin": "*"
+  // }
 })
 
 export const verifyContract = async (deployedContract: Contract, contract: ReefContract, arg: string[], url?: string): Promise<boolean> => {
@@ -58,7 +58,7 @@ export const verifyContract = async (deployedContract: Contract, contract: ReefC
       license: contract.license,
       runs: contract.runs
     };
-    await contractVerificatorApi.post<VerificationContractReq, AxiosResponse<string>>
+    await contractVerificatorApi.post<VerificationContractReq, AxiosResponse>
       (`${url}${CONTRACT_VERIFICATION_URL}`, body)
       // (verification_test, body)
     return true;
@@ -68,9 +68,9 @@ export const verifyContract = async (deployedContract: Contract, contract: ReefC
   }
 }
 
-export const deploy = async (contractAbi: CompiledContract, params: any[], signer: Signer): Promise<Contract> => {
+export const deploy = async (compiledContract: CompiledContract, params: any[], signer: Signer): Promise<Contract> => {
   return ContractFactory
-    .fromSolidity(contractAbi)
+    .fromSolidity(compiledContract)
     .connect(signer as EthersSigner)
     .deploy(...params);
 }
