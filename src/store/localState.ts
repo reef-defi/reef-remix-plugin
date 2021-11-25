@@ -23,6 +23,9 @@ export const contractAttributeDefaultState = (abi: FunctionDescription): Contrac
 export interface RemixSigner {
   balance: BigNumber;
   address: string;
+  evmAddress: string;
+  isEvmClaimed: boolean;
+  name: string;
   signer: Signer;
 }
 
