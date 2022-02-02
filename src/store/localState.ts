@@ -13,12 +13,13 @@ export interface ContractAttributeState {
   abi: FunctionDescription;
 }
 
-export const contractAttributeDefaultState = (abi: FunctionDescription): ContractAttributeState => ({
+export const contractAttributeDefaultState = (
+  abi: FunctionDescription
+): ContractAttributeState => ({
   abi,
   text: "",
   error: false,
 });
-
 
 export interface RemixSigner {
   balance: BigNumber;
@@ -26,6 +27,7 @@ export interface RemixSigner {
   evmAddress: string;
   isEvmClaimed: boolean;
   name: string;
+  genesisHash?: string | null | undefined;
   signer: Signer;
 }
 
@@ -34,3 +36,4 @@ export interface ContractAttribute {
   type: string;
   value: string;
 }
+
