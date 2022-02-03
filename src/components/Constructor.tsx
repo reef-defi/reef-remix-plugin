@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "../store/reducers";
 import Deploy from "./Deploy";
@@ -9,17 +9,18 @@ import { BigNumber } from "ethers";
 import { signersSelect } from "../store/actions/signers";
 import { findSigner } from "../utils";
 
-
 const bigNumberToString = (num: BigNumber): string => {
   const value = formatEther(num);
   const point = value.indexOf(".");
-  return value.slice(0, point+3);
-}
+  return value.slice(0, point + 3);
+};
 
 const Constructor = () => {
   const dispatch = useDispatch();
   const { signers, index } = useSelector((state: StateType) => state.signers);
-  const {contracts} = useSelector((state: StateType) => state.compiledContracts);
+  const { contracts } = useSelector(
+    (state: StateType) => state.compiledContracts
+  );
 
   const [selectedContract, setSelectedContract] = useState("");
 
@@ -36,29 +37,24 @@ const Constructor = () => {
     }
   }, [contracts]);
 
-  const signerOptions = signers
-    .map(({address, balance}, index) => (
+  const signerOptions = signers.map(
+    ({ name, address, balance }, index) => (
       <option value={address} key={index}>
-        {address.slice(0, 6)}
-        ...
-        {address.slice(address.length-5)} - ({bigNumberToString(balance)} Reef)
+        {name} - ({bigNumberToString(balance)} REEF)
       </option>
-    ));
+    )
+  );
 
-  const contractOptions = Object
-    .keys(contracts)
-    .map((contract, index) => (
-      <option value={contract} key={index}>
-        {contract}
-      </option>
-    ));
+  const contractOptions = Object.keys(contracts).map((contract, index) => (
+    <option value={contract} key={index}>
+      {contract}
+    </option>
+  ));
 
   return (
     <div className="m-3">
       <div>
-        <label>
-          Accounts:
-        </label>
+        <label>Accounts:</label>
 
         <div className="d-flex flex-row align-items-center">
           <select
@@ -67,34 +63,36 @@ const Constructor = () => {
             value={account}
             onChange={(event) => setAccount(event.target.value)}
           >
-            { signerOptions }
+            {signerOptions}
           </select>
           <Copy value={account} />
         </div>
       </div>
       <div>
-        <label>
-          Compiled contracts:
-        </label>
+        <label>Compiled contracts:</label>
 
         <select
           className="form-control select_3rUxUe custom-select"
           value={selectedContract}
           onChange={(event) => setSelectedContract(event.target.value)}
         >
-          { contractOptions }
+          {contractOptions}
         </select>
       </div>
 
-      { index !== -1 ? 
+      {index !== -1 ? (
         <>
-          <Deploy contractName={selectedContract} /> 
+          <Deploy contractName={selectedContract} />
           <DeployedContracts />
-        </> 
-        : <div className="text-danger pt-3 text">Sign in with one of your wallets under the settings!</div>
-      }
+        </>
+      ) : (
+        <div className="text-danger pt-3 text">
+          Sign in with one of your wallets under the settings!
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default Constructor;
+
