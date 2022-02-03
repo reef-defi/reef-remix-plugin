@@ -87,7 +87,7 @@ export const verifyContract = async (deployedContract: Contract, contract: ReefC
 export const deploy = async (compiledContract: CompiledContract, params: any[], signer: Signer): Promise<Contract> => {
   return ContractFactory
     .fromSolidity(compiledContract)
-    .connect(signer as EthersSigner)
+    .connect(signer)
     .deploy(...params);
 }
 

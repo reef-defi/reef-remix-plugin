@@ -1,6 +1,6 @@
 import { ContractHolder } from "../localState";
 import { ContractActionType } from "../actions/contracts";
-import { CONTRACTS_ADD, CONTRACTS_REMOVE_ALL, CONTRACTS_REMOVE } from "../actionType";
+import { CONTRACTS_ADD, CONTRACTS_REMOVE_ALL, CONTRACTS_REMOVE, CONTRACTS_ADD_MULTIPLE } from "../actionType";
 
 export interface ContractsReducer {
   contracts: ContractHolder[];
@@ -18,6 +18,7 @@ export const contractsReducer = (state=initialState, action: ContractActionType)
       ...state.contracts.slice(action.index+1)
     ]};
     case CONTRACTS_REMOVE_ALL: return {...state, contracts: []};
+    case CONTRACTS_ADD_MULTIPLE: return {...state, contracts: [...action.contracts]};
     default: return state;
   }
 }
