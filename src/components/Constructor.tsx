@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Contract } from 'ethers';
+import { Contract } from "ethers";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "../store/reducers";
 import Deploy from "./Deploy";
@@ -11,7 +11,10 @@ import { signersSelect } from "../store/actions/signers";
 import { findSigner } from "../utils";
 import { ContractHolder, RemixSigner } from "../store/localState";
 import { CompiledContractReducer } from "../store/reducers/compiledContracts";
-import { contractAddMultiple, contractRemoveAll } from "../store/actions/contracts";
+import {
+  contractAddMultiple,
+  contractRemoveAll,
+} from "../store/actions/contracts";
 
 const bigNumberToString = (num: BigNumber): string => {
   const value = formatEther(num);
@@ -19,20 +22,30 @@ const bigNumberToString = (num: BigNumber): string => {
   return value.slice(0, point + 3);
 };
 
-const updateContracts = (signer: RemixSigner, oldContracts: ContractHolder[], compiledContracts: CompiledContractReducer): ContractHolder[] => oldContracts
-  .map(({name, contract}) => ({
+const updateContracts = (
+  signer: RemixSigner,
+  oldContracts: ContractHolder[],
+  compiledContracts: CompiledContractReducer
+): ContractHolder[] =>
+  oldContracts.map(({ name, contract }) => ({
     name,
-    contract: new Contract(contract.address, compiledContracts.contracts[name].payload.abi, signer.signer)
+    contract: new Contract(
+      contract.address,
+      compiledContracts.contracts[name].payload.abi,
+      signer.signer
+    ),
   }));
 
 const Constructor = () => {
   const dispatch = useDispatch();
   const { signers, index } = useSelector((state: StateType) => state.signers);
-  const { contracts: oldContracts } = useSelector((state: StateType) => state.contracts);
+  const { contracts: oldContracts } = useSelector(
+    (state: StateType) => state.contracts
+  );
   const compiledContracts = useSelector(
     (state: StateType) => state.compiledContracts
   );
-  const {contracts} = compiledContracts;
+  const { contracts } = compiledContracts;
   const [selectedContract, setSelectedContract] = useState("");
 
   const account = index === -1 ? "" : signers[index].address;
@@ -42,7 +55,11 @@ const Constructor = () => {
   const setAccount = (value: string) => {
     const signerIndex = findSigner(signers, value);
     dispatch(signersSelect(signerIndex));
-    const newContracts = updateContracts(signers[signerIndex], oldContracts, compiledContracts);
+    const newContracts = updateContracts(
+      signers[signerIndex],
+      oldContracts,
+      compiledContracts
+    );
     dispatch(contractRemoveAll());
     dispatch(contractAddMultiple(newContracts));
   };
@@ -54,13 +71,11 @@ const Constructor = () => {
     }
   }, [contracts]);
 
-  const signerOptions = signers.map(
-    ({ name, address, balance }, index) => (
-      <option value={address} key={index}>
-        {name} - ({bigNumberToString(balance)} REEF)
-      </option>
-    )
-  );
+  const signerOptions = signers.map(({ name, address, balance }, index) => (
+    <option value={address} key={index}>
+      {name} - ({bigNumberToString(balance)} REEF)
+    </option>
+  ));
 
   const contractOptions = Object.keys(contracts).map((contract, index) => (
     <option value={contract} key={index}>
@@ -84,7 +99,15 @@ const Constructor = () => {
           </select>
           <Copy value={evmAddress} />
         </div>
-        { !isClaimed && <a href="https://reefswap.com/bind" className="text text-decoration-none" target="_blank">Bind EVM account</a>  }
+        {!isClaimed && (
+          <a
+            href="https://reefswap.com/bind"
+            className="text text-decoration-none"
+            target="_blank"
+          >
+            Bind EVM account
+          </a>
+        )}
       </div>
       <div>
         <label>Compiled contracts:</label>
@@ -113,4 +136,3 @@ const Constructor = () => {
 };
 
 export default Constructor;
-
