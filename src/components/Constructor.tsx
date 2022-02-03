@@ -25,6 +25,8 @@ const Constructor = () => {
   const [selectedContract, setSelectedContract] = useState("");
 
   const account = index === -1 ? "" : signers[index].address;
+  const isClaimed = index === -1 ? false : signers[index].isEvmClaimed;
+
   const setAccount = (value: string) => {
     const signerIndex = findSigner(signers, value);
     dispatch(signersSelect(signerIndex));
@@ -67,6 +69,7 @@ const Constructor = () => {
           </select>
           <Copy value={account} />
         </div>
+        { !isClaimed && <a href="https://reefswap.com/bind" className="text text-decoration-none" target="_blank">Bind EVM account</a>  }
       </div>
       <div>
         <label>Compiled contracts:</label>
