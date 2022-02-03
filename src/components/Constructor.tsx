@@ -38,7 +38,7 @@ const Constructor = () => {
   }, [contracts]);
 
   const signerOptions = signers.map(
-    ({ name, address, balance, isEvmClaimed }, index) => (
+    ({ name, address, balance }, index) => (
       <option value={address} key={index}>
         {name} - ({bigNumberToString(balance)} REEF)
       </option>

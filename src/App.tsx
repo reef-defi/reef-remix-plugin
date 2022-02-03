@@ -1,60 +1,24 @@
-import { WsProvider, Keyring } from "@polkadot/api";
-import {
-  Provider,
-  Signer,
-  TestAccountSigningKey,
-} from "@reef-defi/evm-provider";
-import React, { useEffect, useState } from "react";
+import { WsProvider } from "@polkadot/api";
+import { Provider, Signer } from "@reef-defi/evm-provider";
+import { useEffect, useState } from "react";
 import Constructor from "./components/Constructor";
 import Loading from "./components/common/loading/Loading";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  signersAdd,
-  signersAddList,
-  signersClear,
-} from "./store/actions/signers";
+import { useDispatch } from "react-redux";
+import { signersAddList, signersClear } from "./store/actions/signers";
 import {
   NotifyFun,
   setNotifyAction,
   setProviderAction,
   setReefscanUrl,
 } from "./store/actions/utils";
-import { StateType } from "./store/reducers";
 import { RemixSigner } from "./store/localState";
 import { getNetworkSpec, NetworkName } from "./utils/network";
 import { contractRemoveAll } from "./store/actions/contracts";
 import Dot from "./components/common/Dot";
-import {
-  isWeb3Injected,
-  web3Accounts,
-  web3Enable,
-} from "@reef-defi/extension-dapp";
+import { web3Accounts, web3Enable } from "@reef-defi/extension-dapp";
 
 import type { InjectedAccountWithMeta } from "@reef-defi/extension-inject/types";
 import type { Signer as InjectedSigner } from "@polkadot/api/types";
-
-// const extractAddress = async (provider: Provider, url: string, wallet: Signer): Promise<RemixSigner> => {
-//   const isClaimed = await wallet.isClaimed();
-//   const address = await wallet.getAddress();
-
-//   if (!isClaimed) {
-//     await wallet.claimDefaultAccount();
-//   }
-//   const balance = await provider.getBalance(address);
-//   return {
-//     address,
-//     balance,
-//     signer: wallet,
-//   }
-// }
-
-const connectWallet = (provider: Provider, mnemonic: string): Signer => {
-  const signingKeys = new TestAccountSigningKey(provider.api.registry);
-  const keyring = new Keyring({ type: "sr25519" });
-  const pair = keyring.addFromUri(mnemonic);
-  signingKeys.addKeyringPair(pair);
-  return new Signer(provider, pair.address, signingKeys);
-};
 
 interface App {
   notify: NotifyFun;
@@ -62,23 +26,28 @@ interface App {
 
 type Status = "loading" | "success" | "failed";
 
-const accountToSigner = (provider: Provider, sign: InjectedSigner) => async (
-  account: InjectedAccountWithMeta
-): Promise<RemixSigner> => {
-  const signer = new Signer(provider, account.address, sign);
-  const evmAddress = await signer.getAddress();
-  const isEvmClaimed = await signer.isClaimed();
+const accountToSigner =
+  (provider: Provider, sign: InjectedSigner) =>
+  async (account: InjectedAccountWithMeta): Promise<RemixSigner> => {
+    const signer = new Signer(provider, account.address, sign);
+    const evmAddress = await signer.getAddress();
+    let isEvmClaimed = await signer.isClaimed();
 
-  return {
-    signer,
-    evmAddress,
-    isEvmClaimed,
-    name: account.meta.name || "",
-    genesisHash: account.meta.genesisHash,
-    address: account.address,
-    balance: await provider.getBalance(evmAddress),
+    if (!isEvmClaimed) {
+      await signer.claimDefaultAccount();
+      isEvmClaimed = await signer.isClaimed();
+    }
+
+    return {
+      signer,
+      evmAddress,
+      isEvmClaimed,
+      address: account.address,
+      name: account.meta.name || "",
+      genesisHash: account.meta.genesisHash,
+      balance: await provider.getBalance(evmAddress),
+    };
   };
-};
 
 const App = ({ notify }: App) => {
   const dispatch = useDispatch();
