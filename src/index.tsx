@@ -57,7 +57,7 @@ const initPlugin = async (client: IClient, dispatch: IDispatch) => {
     
     dispatch(compiledContractLoad(
       data,
-      optimization,
+      optimization === 'true',
       runs,
       compilerVersion.slice(0, compilerVersion.length-3),
       source as unknown as ContractSourceContent,

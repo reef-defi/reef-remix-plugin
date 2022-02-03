@@ -31,7 +31,7 @@ const ContractRetrieve = ({contractName} : ContractRetrieveProps) => {
       const contract = new Contract(address, contractAbi, signer.signer as Signer);
       dispatch(contractAdd(contractName, contract));
     } catch (e) {
-      setErrorMessage(e.message);
+      setErrorMessage((e as any).message);
     }
   };
 

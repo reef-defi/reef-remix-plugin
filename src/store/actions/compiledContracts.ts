@@ -14,7 +14,7 @@ export interface ContractLoad {
   type: typeof COMPILED_CONTRACT_LOAD;
   runs: string;
   target: string;
-  optimization: string;
+  optimization: boolean;
   compilerVersion: string;
   data: CompilationResult | null;
   compilationSources: ContractSourceContent;
@@ -39,7 +39,7 @@ export type CompiledContractType =
   | ContractDeployed
   | ContractDeploying;
 
-export const compiledContractLoad = (data: CompilationResult | null, optimization: string, runs: string, compilerVersion: string, compilationSources: ContractSourceContent, target: string): ContractLoad => ({
+export const compiledContractLoad = (data: CompilationResult | null, optimization: boolean, runs: string, compilerVersion: string, compilationSources: ContractSourceContent, target: string): ContractLoad => ({
   data,
   runs,
   target,

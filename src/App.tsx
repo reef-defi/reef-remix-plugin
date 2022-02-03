@@ -33,11 +33,6 @@ const accountToSigner =
     const evmAddress = await signer.getAddress();
     let isEvmClaimed = await signer.isClaimed();
 
-    if (!isEvmClaimed) {
-      await signer.claimDefaultAccount();
-      isEvmClaimed = await signer.isClaimed();
-    }
-
     return {
       signer,
       evmAddress,
@@ -90,6 +85,9 @@ const App = ({ notify }: App) => {
             !account.genesisHash ||
             account.genesisHash === network.genesisHash
         );
+        if (accounts.length === 0) {
+          throw new Error('Reef extension doesn\'t seem to have any accounts available. Create or inject your existing account and deploy your first contract!')
+        }
         dispatch(setReefscanUrl(network.reefscanUrl));
         dispatch(setProviderAction(newProvider));
         dispatch(signersAddList(accounts));
