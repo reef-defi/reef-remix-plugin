@@ -1,6 +1,6 @@
 import { Dispatch } from "redux";
 import { Signer } from "@reef-defi/evm-provider";
-import { Contract, ContractFactory, Signer as EthersSigner } from "ethers";
+import { Contract, ContractFactory } from "ethers";
 import { CompiledContract } from "@remixproject/plugin-api/lib/compiler/type";
 import { contractAdd } from "../store/actions/contracts";
 import { compiledContractDeploying, compiledContractDeployed, compiledContractError } from "../store/actions/compiledContracts";
@@ -11,7 +11,7 @@ import { AxiosResponse } from "axios";
 import { delay } from "../utils";
 
 const CONTRACT_VERIFICATION_URL = "/api/verificator/submit-verification";
-const verification_test = "http://localhost:3000/api/verificator/submit-verification";
+// const verification_test = "http://localhost:3000/api/verificator/submit-verification";
 
 interface BaseContract {
   runs: number;
@@ -67,7 +67,7 @@ export const verifyContract = async (deployedContract: Contract, contract: ReefC
       filename: contract.filename,
       target: contract.target,
       source: contract.source,
-      optimization: contract.optimization,
+      optimization: `${contract.optimization}`,
       compilerVersion: contract.compilerVersion,
       license: contract.license,
       runs: contract.runs
