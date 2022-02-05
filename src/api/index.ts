@@ -18,7 +18,7 @@ interface BaseContract {
   source: string;
   target: string;
   license: string;
-  optimization: boolean;
+  optimization: string;
   compilerVersion: string;
 }
 
@@ -76,7 +76,6 @@ export const verifyContract = async (deployedContract: Contract, contract: ReefC
     await waitUntilContractExists(url, deployedContract.address);
     await contractVerificatorApi.post<VerificationContractReq, AxiosResponse>
       (`${url}${CONTRACT_VERIFICATION_URL}`, body)
-      // (verification_test, body)
     notify(verificationNofitication(contract.contractName, true));
   } catch (err) {
     console.error(err)
