@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@reef-defi/extension-dapp":"^",
-    "@reef-defi/evm-provider": "^1.0.4",
+    "@reef-defi/evm-provider": "^1.0.6",
     "@remixproject/plugin": "^0.3.19",
     "@remixproject/plugin-api": "^0.3.19",
     "@remixproject/plugin-webview": "^0.3.19",
