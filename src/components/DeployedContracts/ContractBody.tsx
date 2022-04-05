@@ -87,7 +87,7 @@ const ContractBody = ({
       const text = await extractResult(result, state[index].abi.outputs);
       notify(createNotification(field.abi.name!, values.join(", "), text));
       updateState({ ...field, text, error: false }, index);
-    } catch (e) {
+    } catch (e: any) {
       const message = typeof e === "string" ? e : e.message;
       notify(
         `There was an error in ${field.abi.name} call. Error: ${message}`,
@@ -112,7 +112,7 @@ const ContractBody = ({
       const text = await extractResult(result, state[index].abi.outputs);
       notify(createNotification(field.abi.name!, value, text));
       updateState({ ...field, text, error: false }, index);
-    } catch (e) {
+    } catch (e: any) {
       const message = typeof e === "string" ? e : e.message;
       notify(
         `There was an error in ${field.abi.name} call. Error: ${message}`,
