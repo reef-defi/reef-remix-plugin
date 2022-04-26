@@ -7,9 +7,7 @@ export const getConstructor = (abi: ABIDescription[]): ABIDescription | undefine
 export const prepareParameters = (parameters: string): string[] => 
   parameters === "" 
     ? [] 
-    : parameters
-      .split(",")
-      .map((param) => param.trim());
+    : JSON.parse(`[${parameters}]`);
 
 export const getParameters = (abi?: ABIDescription): ABIParameter[] => 
   abi ? abi.inputs ? abi.inputs as ABIParameter[] : [] : [];
