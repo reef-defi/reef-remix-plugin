@@ -19,6 +19,7 @@ const networks: Networks = {
   Localhost: {
     name: "Localhost",
     url: "ws://127.0.0.1:9944",
+    reefscanUrl: "http://localhost:8000",
   },
   Testnet: {
     name: "Testnet",

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.tsx",
   "scripts": {
-    "start": "webpack serve --config webpack/webpack.config.js --env env=dev",
+    "start": "webpack serve --config webpack/webpack.config.js --env env=dev --port 8001",
     "build": "webpack --config webpack/webpack.config.js --env env=prod",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,8 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@reef-defi/extension-dapp":"^",
-    "@reef-defi/evm-provider": "^1.0.6",
+    "@reef-defi/evm-provider": "^1.0.7",
+    "@reef-defi/extension-dapp": "^1.0.2",
     "@remixproject/plugin": "^0.3.19",
     "@remixproject/plugin-api": "^0.3.19",
     "@remixproject/plugin-webview": "^0.3.19",
